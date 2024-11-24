@@ -1,12 +1,10 @@
 <mat-card class="certificate">
-  <mat-card-header>
-    <mat-card-title>Generar Certificado</mat-card-title>
-  </mat-card-header>
   <mat-card-content class="certificate__content">
     <form [formGroup]="certificateForm" (ngSubmit)="generateCertificate()" class="certificate__form">
-      <div class="certificate__grid">
-        <!-- Column 1 -->
-        <div class="certificate__column">
+      <!-- Sección 1: Datos del Estudiante -->
+      <div class="form-section">
+        <h3 class="section-title">Datos del Estudiante</h3>
+        <div class="form-row full-width">
           <mat-form-field appearance="outline" class="certificate__field">
             <mat-label>Nombre del Estudiante</mat-label>
             <input matInput formControlName="studentName" placeholder="Ingrese el nombre completo">
@@ -14,7 +12,9 @@
               <mat-error>El nombre es requerido y debe tener al menos 3 caracteres</mat-error>
             }
           </mat-form-field>
+        </div>
 
+        <div class="form-row two-columns">
           <mat-form-field appearance="outline" class="certificate__field">
             <mat-label>Tipo de Documento</mat-label>
             <mat-select formControlName="documentType">
@@ -37,7 +37,9 @@
               <mat-error>{{ getDocumentErrorMessage() }}</mat-error>
             }
           </mat-form-field>
+        </div>
 
+        <div class="form-row two-columns">
           <mat-form-field appearance="outline" class="certificate__field">
             <mat-label>Lugar de Expedición</mat-label>
             <input matInput formControlName="expeditionPlace" placeholder="Ciudad de expedición">
@@ -45,10 +47,21 @@
               <mat-error>El lugar de expedición es requerido</mat-error>
             }
           </mat-form-field>
-        </div>
 
-        <!-- Column 2 -->
-        <div class="certificate__column">
+          <mat-form-field appearance="outline" class="certificate__field">
+            <mat-label>Correo Electrónico</mat-label>
+            <input matInput type="email" formControlName="email" placeholder="ejemplo@correo.com">
+            @if (certificateForm.get('email')?.touched && certificateForm.get('email')?.errors) {
+              <mat-error>Ingrese un correo electrónico válido</mat-error>
+            }
+          </mat-form-field>
+        </div>
+      </div>
+
+      <!-- Sección 2: Datos del Curso -->
+      <div class="form-section">
+        <h3 class="section-title">Datos del Curso</h3>
+        <div class="form-row full-width">
           <mat-form-field appearance="outline" class="certificate__field">
             <mat-label>Nombre del Curso</mat-label>
             <input matInput formControlName="courseName" placeholder="Ingrese el nombre del curso">
@@ -56,15 +69,9 @@
               <mat-error>El nombre del curso es requerido</mat-error>
             }
           </mat-form-field>
+        </div>
 
-          <mat-form-field appearance="outline" class="certificate__field">
-            <mat-label>Cantidad de Horas</mat-label>
-            <input matInput type="number" formControlName="hours" placeholder="0" min="1">
-            @if (certificateForm.get('hours')?.touched && certificateForm.get('hours')?.errors) {
-              <mat-error>La cantidad de horas debe ser mayor a 0</mat-error>
-            }
-          </mat-form-field>
-
+        <div class="form-row two-columns">
           <mat-form-field appearance="outline" class="certificate__field">
             <mat-label>Válido hasta el año</mat-label>
             <mat-select formControlName="validityYear">
@@ -79,29 +86,27 @@
           </mat-form-field>
 
           <mat-form-field appearance="outline" class="certificate__field">
-            <mat-label>Correo Electrónico</mat-label>
-            <input matInput type="email" formControlName="email" placeholder="ejemplo@correo.com">
-            @if (certificateForm.get('email')?.touched && certificateForm.get('email')?.errors) {
-              <mat-error>Ingrese un correo electrónico válido</mat-error>
+            <mat-label>Cantidad de Horas</mat-label>
+            <input matInput type="number" formControlName="hours" placeholder="0" min="1">
+            @if (certificateForm.get('hours')?.touched && certificateForm.get('hours')?.errors) {
+              <mat-error>La cantidad de horas debe ser mayor a 0</mat-error>
             }
           </mat-form-field>
         </div>
       </div>
 
       <div class="certificate__actions">
+        <!-- Generate Certificate -->
         <button mat-raised-button color="primary" type="submit" [disabled]="!certificateForm.valid || isGenerating">
           <mat-icon>assignment</mat-icon>
           {{ isGenerating ? 'Generando...' : 'Generar Certificado' }}
         </button>
+
+        <!-- Download PDF -->
         <button mat-raised-button color="accent" type="button" (click)="downloadCertificate()" 
                 [disabled]="!certificateGenerated || isGenerating">
           <mat-icon>download</mat-icon>
           {{ isGenerating ? 'Procesando...' : 'Descargar PDF' }}
-        </button>
-        <button mat-raised-button color="warn" type="button" (click)="sendEmail()" 
-                [disabled]="!certificateGenerated || isGenerating">
-          <mat-icon>email</mat-icon>
-          {{ isGenerating ? 'Enviando...' : 'Enviar por Email' }}
         </button>
       </div>
     </form>
@@ -111,7 +116,6 @@
 @if (certificateGenerated) {
   <div #certificateElement class="certificate-preview">
     <div class="certificate-preview__content">
-      <!-- Certificate preview content remains the same -->
       <div class="content-wrapper">
         <div class="title-group">
           <h1 class="title">DE ASISTENCIA SEGÚN RESOLUCIÓN 3100 DE 2019</h1>
