@@ -7,12 +7,12 @@ $text-color: #4a5568;
 $border-radius: 8px;
 $transition-speed: 0.3s;
 
-// Host styles
+// Host styles actualizado para mejor responsividad
 :host {
   display: grid;
-  grid-template-columns: minmax(300px, 600px) 1fr;
-  gap: 2rem;
-  padding: 1rem;
+  grid-template-columns: minmax(200px, 500px) 1fr;
+  gap: 1rem;
+  padding: 0.5rem;
   height: 100vh;
   overflow: hidden;
   background: #f5f7fa;
@@ -21,12 +21,15 @@ $transition-speed: 0.3s;
     grid-template-columns: 1fr;
     height: auto;
     overflow: auto;
-    padding: 1rem;
+    padding: 0.5rem;
   }
 }
 
+
+// Secciones del formulario
 .form-section {
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
+  width: 100%;
 
   &:last-of-type {
     margin-bottom: 1rem;
@@ -35,91 +38,122 @@ $transition-speed: 0.3s;
 
 .section-title {
   color: $primary-color;
-  font-size: 1.1rem;
+  font-size: 1rem;
   margin-bottom: 1rem;
   padding-bottom: 0.5rem;
   border-bottom: 1px solid rgba($primary-color, 0.1);
 }
 
+// Form rows actualizados para mejor responsividad
 .form-row {
   margin-bottom: 1rem;
-
-  &.full-width {
-    width: 100%;
-  }
+  width: 100%;
 
   &.two-columns {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 1.5rem;
+    gap: 1rem;
 
     @media (max-width: 768px) {
-      grid-template-columns: 1fr;
+      grid-template-columns: 1fr; // Cambia a una columna en móvil
+      gap: 0.75rem;
     }
+  }
+
+  &.full-width {
+    width: 100%;
   }
 }
 
-// Certificate Form Styles
+// Certificate Form Styles actualizados
 .certificate {
+  &__actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.5rem;
+    justify-content: center; // Centrar botones
+    flex-wrap: wrap; // Permite que los botones se apilen en móvil
+
+    @media (max-width: 768px) {
+      flex-direction: column;
+      width: 100%;
+      gap: 0.75rem;
+    }
+
+    button {
+      font-size: 14px; // Texto más grande
+      height: 44px; // Botones más altos
+      padding: 0 24px; // Más padding horizontal
+      min-width: 200px; // Ancho mínimo para mejor aspecto
+
+      @media (max-width: 768px) {
+        width: 100%; // Ocupar todo el ancho en móvil
+      }
+
+      .mat-icon {
+        font-size: 20px; // Íconos más grandes
+        height: 20px;
+        width: 20px;
+        margin-right: 8px;
+      }
+    }
+  }
+
   &__content {
     padding: 1rem;
   }
 
   &__field {
     width: 100%;
+    font-size: 14px; // Aumentado para mejor legibilidad
 
     ::ng-deep {
-      .mat-form-field-wrapper {
+      .mat-mdc-form-field-wrapper {
         margin: 0;
-        padding-bottom: 1.25em;
+        padding-bottom: 1em;
       }
 
-      .mat-form-field-outline {
-        background-color: rgba(255, 255, 255, 0.8);
+      .mat-mdc-text-field-wrapper {
+        padding-top: 0;
+        padding-bottom: 0;
+        height: 48px; // Aumentado para mejor usabilidad en móvil
       }
 
-      .mat-form-field-label {
-        color: $text-color;
+      .mat-mdc-form-field-flex {
+        min-height: 30px; // Aumentado para coincidir
+        padding-top: 0 !important;
       }
 
-      .mat-select-value {
-        color: $primary-color;
-      }
-    }
-  }
-
-  &__actions {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1rem;
-    margin-top: 2rem;
-    padding: 1rem 0;
-
-    button {
-      width: 100%;
-      height: 48px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all $transition-speed ease;
-
-      .mat-icon {
-        margin-right: 0.5rem;
+      .mat-mdc-form-field-infix {
+        padding: 12px 0;
+        min-height: unset;
       }
 
-      &:disabled {
-        opacity: 0.7;
+      .mdc-text-field--outlined {
+        --mdc-typography-subtitle1-line-height: 1.2;
       }
 
-      &:hover:not(:disabled) {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      .mat-mdc-select {
+        padding: 12px 0;
+      }
+
+      .mat-mdc-form-field-subscript-wrapper {
+        height: 20px;
+      }
+
+      .mat-mdc-form-field-error {
+        font-size: 12px;
+      }
+
+      input.mat-mdc-input-element {
+        margin-top: 0;
+        margin-bottom: 0;
       }
     }
   }
 }
 
-// Certificate Preview Styles
+// Certificate Preview Styles (mantener igual que antes)
 .certificate-preview {
   background: white;
   border-radius: $border-radius;
@@ -127,9 +161,9 @@ $transition-speed: 0.3s;
   overflow: auto;
   height: 100%;
   padding: 1rem;
-  
+
   @media (max-width: 1200px) {
-    margin-top: 2rem;
+    margin-top: 1rem;
     height: auto;
   }
 
@@ -137,12 +171,11 @@ $transition-speed: 0.3s;
     width: 279.4mm;
     height: 215.9mm;
     position: relative;
-    /* margin: 0 65px; */
-    margin: 0 0px;
+    margin: 0;
     background-color: white;
     overflow: hidden;
     display: grid;
-    grid-template-columns: 192px 1fr; // Dividimos el espacio explícitamente
+    grid-template-columns: 192px 1fr;
 
     &::before {
       content: '';
@@ -165,12 +198,13 @@ $transition-speed: 0.3s;
     }
   }
 }
-// Certificate Content Styles
+
+// El resto de los estilos permanecen igual...
 .content-wrapper {
   position: relative;
   z-index: 2;
-  grid-column: 2; // El contenido empieza en la segunda columna
-  width: 100%; // Ahora puede usar todo el espacio de su columna
+  grid-column: 2;
+  width: 100%;
   margin-top: 120px;
   display: flex;
   flex-direction: column;
@@ -292,7 +326,7 @@ $transition-speed: 0.3s;
       transition: color $transition-speed ease;
 
       &:hover {
-        color: darken($secondary-color, 10%);
+       /*  color: darken($secondary-color, 10%); */
         text-decoration: underline;
       }
     }
@@ -303,26 +337,25 @@ $transition-speed: 0.3s;
 ::ng-deep {
   .mat-mdc-card {
     border-radius: $border-radius;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
-  }
-
-  .mat-mdc-card-header {
-    padding: 1.5rem 1.5rem 0;
-
-    .mat-mdc-card-title {
-      font-size: 1.5rem;
-      color: $primary-color;
-      margin-bottom: 0;
-    }
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
   }
 
   .mat-mdc-form-field {
     width: 100%;
   }
 
-  .mat-mdc-form-field-error {
-    font-size: 12px;
-    margin-top: 4px;
+  .mat-mdc-text-field-wrapper {
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+
+  .mat-mdc-form-field-flex {
+    min-height: 40px !important;
+  }
+
+  .mat-mdc-form-field-infix {
+    padding: 8px 0 !important;
+    min-height: unset !important;
   }
 
   .mat-mdc-raised-button {
@@ -330,54 +363,17 @@ $transition-speed: 0.3s;
   }
 }
 
+
 // Print Styles
 @media print {
-  :host {
-    display: block !important;
-    height: auto !important;
-    overflow: visible !important;
-    background: none !important;
-  }
-
-  .certificate {
-    display: none !important;
-  }
-
   .certificate-preview {
-    background: none;
-    box-shadow: none;
-    overflow: visible;
-    height: auto;
-    padding: 0;
-    margin: 0;
+    position: relative;
+    width: 100%;
+    border: none;
 
     &__content {
-      width: 215.9mm !important;
-      height: 279.4mm !important;
-      margin: 0 !important;
-      padding: 0 !important;
-      transform: none !important;
-      page-break-inside: avoid;
+      font-size: 10pt;
       page-break-after: always;
-
-      &::before {
-        background-size: cover !important;
-      }
-    }
-  }
-
-  .content-wrapper {
-    width: 85% !important;
-    margin: 100px auto 0 !important;
-    padding: 2.54cm 1.5cm !important;
-    transform: none !important;
-  }
-
-  // Asegurar que las imágenes se impriman
-  .firmas {
-    img {
-      -webkit-print-color-adjust: exact;
-      print-color-adjust: exact;
     }
   }
 }

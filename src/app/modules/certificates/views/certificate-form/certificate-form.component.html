@@ -18,9 +18,8 @@
           <mat-form-field appearance="outline" class="certificate__field">
             <mat-label>Tipo de Documento</mat-label>
             <mat-select formControlName="documentType">
-              <mat-option value="">Seleccione el tipo de documento...</mat-option>
               @for (type of documentTypes; track type.tipo) {
-                <mat-option [value]="type.tipo">{{ type.nombre }}</mat-option>
+                <mat-option [value]="type.tipo">{{ type.tipo }}</mat-option>
               }
             </mat-select>
             @if (certificateForm.get('documentType')?.touched && certificateForm.get('documentType')?.errors) {
@@ -30,7 +29,7 @@
 
           <mat-form-field appearance="outline" class="certificate__field">
             <mat-label>Número de Documento</mat-label>
-            <input matInput formControlName="documentNumber" 
+            <input matInput formControlName="documentNumber"
                    [attr.maxlength]="getMaxLength()"
                    placeholder="Ingrese el número de documento">
             @if (certificateForm.get('documentNumber')?.touched && certificateForm.get('documentNumber')?.errors) {
@@ -75,7 +74,6 @@
           <mat-form-field appearance="outline" class="certificate__field">
             <mat-label>Válido hasta el año</mat-label>
             <mat-select formControlName="validityYear">
-              <mat-option value="">Seleccione el año de validez...</mat-option>
               @for (year of validityYears; track year) {
                 <mat-option [value]="year">{{ year }}</mat-option>
               }
@@ -103,7 +101,7 @@
         </button>
 
         <!-- Download PDF -->
-        <button mat-raised-button color="accent" type="button" (click)="downloadCertificate()" 
+        <button mat-raised-button color="accent" type="button" (click)="downloadCertificate()"
                 [disabled]="!certificateGenerated || isGenerating">
           <mat-icon>download</mat-icon>
           {{ isGenerating ? 'Procesando...' : 'Descargar PDF' }}

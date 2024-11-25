@@ -48,7 +48,7 @@ export class CertificateFormComponent {
   }
 
   private initForm(): void {
-    /* this.certificateForm = this.fb.group({
+    this.certificateForm = this.fb.group({
       studentName: ['', [Validators.required, Validators.minLength(3)]],
       documentType: ['', [Validators.required]],
       documentNumber: ['', [Validators.required]],
@@ -57,9 +57,9 @@ export class CertificateFormComponent {
       hours: ['', [Validators.required, Validators.min(1)]],
       email: ['', [Validators.required, Validators.email]],
       validityYear: ['', [Validators.required]]
-    }); */
+    });
 
-    this.certificateForm = this.fb.group({
+/*     this.certificateForm = this.fb.group({
       studentName: ['NESTOR IVÁN MARTINEZ COBO', [Validators.required, Validators.minLength(3)]],
       documentType: ['CC', [Validators.required]],
       documentNumber: ['1061779667', [Validators.required]],
@@ -68,7 +68,7 @@ export class CertificateFormComponent {
       hours: ['40', [Validators.required, Validators.min(1)]],
       email: ['sksmartinez@gmail.com', [Validators.required, Validators.email]],
       validityYear: ['2026', [Validators.required]]
-    });
+    }); */
 
     this.setupFormValidations();
   }
@@ -128,6 +128,8 @@ export class CertificateFormComponent {
     this.certificateService.getDocumentTypes().subscribe({
       next: (data: DocumentType[]) => {
         this.documentTypes = data;
+        console.log(this.documentTypes);
+
       },
       error: (error) => {
         console.error('Error loading document types:', error);
