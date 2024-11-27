@@ -1,0 +1,193 @@
+$primary-color: #2c3e50;
+$secondary-color: #4a90e2;
+
+.certificate-preview {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  overflow: auto;
+  height: 100%;
+  padding: 1rem;
+
+  @media (max-width: 1200px) {
+    margin-top: 1rem;
+    height: auto;
+  }
+
+  &__content {
+    width: 279.4mm;
+    height: 215.9mm;
+    position: relative;
+    margin: 0;
+    background-color: white;
+    overflow: hidden;
+    display: grid;
+    grid-template-columns: 192px 1fr;
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url('/images/template-certificado.png') center/cover no-repeat;
+      z-index: 1;
+    }
+
+    @media (max-width: 1200px) {
+      transform: scale(0.7);
+      transform-origin: top center;
+    }
+
+    @media (max-width: 768px) {
+      transform: scale(0.5);
+    }
+  }
+}
+
+.content-wrapper {
+  position: relative;
+  z-index: 2;
+  grid-column: 2;
+  width: 100%;
+  margin-top: 120px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 2.54cm 1.5cm;
+  margin-left: -372px;
+}
+
+.title-group {
+  margin-bottom: 1.5rem;
+
+  .title {
+    font-size: 20px;
+    font-weight: 700;
+    color: $primary-color;
+    text-transform: uppercase;
+    margin-top: 52px;
+    margin-bottom: 0.5rem;
+    letter-spacing: 0.5px;
+  }
+
+  .company-info {
+    font-size: 20px;
+    font-weight: 600;
+    color: $primary-color;
+  }
+}
+
+.student-group {
+  margin-bottom: 1.5rem;
+
+  .student-name {
+    font-size: 30px;
+    font-weight: 700;
+    color: $primary-color;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+    letter-spacing: 0.5px;
+  }
+
+  .id-info {
+    font-size: 18px;
+    color: $primary-color;
+    line-height: 1.4;
+  }
+}
+
+.course-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  div {
+    font-size: 18px;
+    color: $primary-color;
+    line-height: 1.4;
+  }
+
+  .course-name {
+    font-size: 24px;
+    font-weight: 600;
+    color: $primary-color;
+    margin: 0.5rem 0;
+  }
+}
+
+.firmas {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  z-index: 2;
+  margin-top: 2rem;
+
+  .representante,
+  .director {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0 2rem;
+
+    img {
+      width: 100px;
+      height: 100px;
+      object-fit: contain;
+    }
+
+    div {
+      font-size: 16px;
+      color: $primary-color;
+      font-weight: 600;
+    }
+  }
+}
+
+.verification-info {
+  width: 100%;
+  text-align: left;
+  margin-top: auto;
+  margin-left: 16rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba($primary-color, 0.1);
+
+  p {
+    margin: 2px 0 0.5px 0;
+    font-size: 15px;
+    color: rgba($primary-color, 0.7);
+    line-height: 1.2;
+
+    span {
+      font-weight: 600;
+      color: $primary-color;
+    }
+
+    a {
+      font-weight: 600;
+      color: $secondary-color;
+      text-decoration: none;
+      transition: color 0.3s ease;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+}
+
+// Print Styles
+@media print {
+  .certificate-preview {
+    position: relative;
+    width: 100%;
+    border: none;
+
+    &__content {
+      font-size: 10pt;
+      page-break-after: always;
+    }
+  }
+}

@@ -111,49 +111,13 @@
   </mat-card-content>
 </mat-card>
 
+<!-- Certificado Preview -->
 @if (certificateGenerated) {
-  <div #certificateElement class="certificate-preview">
-    <div class="certificate-preview__content">
-      <div class="content-wrapper">
-        <div class="title-group">
-          <h1 class="title">DE ASISTENCIA SEGÚN RESOLUCIÓN 3100 DE 2019</h1>
-          <div class="company-info">NIT 9012123811 CDCREANIMARTE</div>
-        </div>
-
-        <div class="student-group">
-          <h2 class="student-name">{{ certificateForm.get('studentName')?.value }}</h2>
-          <div class="id-info">
-            IDENTIFICADO CON {{ certificateForm.get('documentType')?.value }}:
-            {{ certificateForm.get('documentNumber')?.value | mask: 'separator.2' }}
-            DE {{ certificateForm.get('expeditionPlace')?.value | uppercase }}
-          </div>
-        </div>
-
-        <div class="course-info">
-          <div>Asistió y aprobó el curso</div>
-          <div class="course-name">{{ certificateForm.get('courseName')?.value }}</div>
-          <div>con una intensidad de {{ certificateForm.get('hours')?.value }} horas.</div>
-        </div>
-
-        <div class="firmas">
-          <div class="representante">
-            <img src="images/fir_rep_legal.jpg" alt="Firma">
-            <div>Representante Legal</div>
-          </div>
-
-          <div class="director">
-            <img src="images/fir_dir_general.jpg" alt="Firma">
-            <div>Director General</div>
-          </div>
-        </div>
-
-        <div class="verification-info">
-          <p>Emitido: <span>{{ currentDate | date:'dd/MM/yyyy' }}</span></p>
-          <p>Vigencia: <span>{{ currentDate | date:'yyyy' }} - {{yearSelected | date:'yyyy'}} </span></p>
-          <p>Código: <span>{{ certificateCode }}</span></p>
-          <p>Verificar: <a href="https://cdcreanimarte.github.io/certificaciones/">https://cdcreanimarte.github.io/certificaciones</a></p>
-        </div>
-      </div>
-    </div>
-  </div>
+  <app-certificate-preview
+    #certificateElement
+    [formData]="certificateForm.value"
+    [currentDate]="currentDate"
+    [yearSelected]="yearSelected"
+    [certificateCode]="certificateCode">
+  </app-certificate-preview>
 }

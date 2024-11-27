@@ -12,16 +12,18 @@ import { NgxMaskPipe } from 'ngx-mask';
 import { CertificateCodeService } from '../../../../shared/services/certificate-code.service';
 import { DocumentType, ValidationRules } from '../../../../core/models/document-type';
 import { MaterialModule } from '../../../../shared/material.module';
+import { CertificatePreviewComponent } from "../certificate-preview/certificate-preview.component";
 
 @Component({
   selector: 'app-certificate-form',
-  imports: [CommonModule, ReactiveFormsModule, FormsModule, NgxMaskPipe, MaterialModule],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, MaterialModule, CertificatePreviewComponent],
   templateUrl: './certificate-form.component.html',
   styleUrl: './certificate-form.component.scss'
 })
 export class CertificateFormComponent {
 
-  @ViewChild('certificateElement') certificateElement!: ElementRef;
+  //@ViewChild('certificateElement') certificateElement!: ElementRef;
+  @ViewChild('certificateElement') certificateElement!: CertificatePreviewComponent;
 
   certificateForm!: FormGroup;
   certificateGenerated = false;
@@ -48,7 +50,7 @@ export class CertificateFormComponent {
   }
 
   private initForm(): void {
-    this.certificateForm = this.fb.group({
+    /* this.certificateForm = this.fb.group({
       studentName: ['', [Validators.required, Validators.minLength(3)]],
       documentType: ['', [Validators.required]],
       documentNumber: ['', [Validators.required]],
@@ -57,9 +59,9 @@ export class CertificateFormComponent {
       hours: ['', [Validators.required, Validators.min(1)]],
       email: ['', [Validators.required, Validators.email]],
       validityYear: ['', [Validators.required]]
-    });
+    }); */
 
-/*     this.certificateForm = this.fb.group({
+    this.certificateForm = this.fb.group({
       studentName: ['NESTOR IVÁN MARTINEZ COBO', [Validators.required, Validators.minLength(3)]],
       documentType: ['CC', [Validators.required]],
       documentNumber: ['1061779667', [Validators.required]],
@@ -68,7 +70,7 @@ export class CertificateFormComponent {
       hours: ['40', [Validators.required, Validators.min(1)]],
       email: ['sksmartinez@gmail.com', [Validators.required, Validators.email]],
       validityYear: ['2026', [Validators.required]]
-    }); */
+    });
 
     this.setupFormValidations();
   }
@@ -252,13 +254,14 @@ export class CertificateFormComponent {
 
     try {
       this.isGenerating = true;
-      const element = this.certificateElement.nativeElement;
+      // Obtenemos el elemento DOM del componente hijo usando el método que expusimos
+      const element = this.certificateElement.getCertificateElement();
       const pdfBlob = await this.certificateService.generatePDF(element);
 
       const url = window.URL.createObjectURL(pdfBlob);
       const link = document.createElement('a');
       link.href = url;
-      link.download = `certificado_${this.certificateForm.get('studentName')?.value}.pdf`;
+      link.download = `Certificado_${this.certificateForm.get('studentName')?.value}.pdf`;
       link.click();
 
       window.URL.revokeObjectURL(url);
