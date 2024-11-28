@@ -10,18 +10,23 @@ $transition-speed: 0.3s;
 // Host styles actualizado para mejor responsividad
 :host {
   display: grid;
-  grid-template-columns: minmax(200px, 500px) 1fr;
+  grid-template-columns: minmax(200px, 540px) 1fr;
   gap: 1rem;
   padding: 0.5rem;
   height: 100vh;
-  overflow: hidden;
+  overflow-y: auto;
+  overflow-x: hidden;
   background: #f5f7fa;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
 
   @media (max-width: 1200px) {
     grid-template-columns: 1fr;
     height: auto;
-    overflow: auto;
-    padding: 0.5rem;
   }
 }
 
@@ -67,12 +72,24 @@ $transition-speed: 0.3s;
 
 // Certificate Form Styles actualizados
 .certificate {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  overflow-y: auto;
+  overflow-x: hidden;
+  max-height: 100vh;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
   &__actions {
     display: flex;
     gap: 1rem;
     margin-top: 1.5rem;
-    justify-content: center; // Centrar botones
-    flex-wrap: wrap; // Permite que los botones se apilen en móvil
+    padding-bottom: 1.5rem; // Añadido padding bottom
+    justify-content: center;
+    flex-wrap: wrap;
+    width: 100%; // Asegurar ancho completo
 
     @media (max-width: 768px) {
       flex-direction: column;
@@ -81,17 +98,19 @@ $transition-speed: 0.3s;
     }
 
     button {
-      font-size: 14px; // Texto más grande
-      height: 44px; // Botones más altos
-      padding: 0 24px; // Más padding horizontal
-      min-width: 200px; // Ancho mínimo para mejor aspecto
+      font-size: 14px;
+      height: 44px;
+      padding: 0 24px;
+      min-width: 200px;
+      margin: 0 0.5rem; // Añadido margen horizontal
 
       @media (max-width: 768px) {
-        width: 100%; // Ocupar todo el ancho en móvil
+        width: 100%;
+        margin: 0; // Reset margin en móvil
       }
 
       .mat-icon {
-        font-size: 20px; // Íconos más grandes
+        font-size: 20px;
         height: 20px;
         width: 20px;
         margin-right: 8px;
@@ -99,60 +118,31 @@ $transition-speed: 0.3s;
     }
   }
 
-  &__content {
-    padding: 1rem;
+  &__form {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 1rem; // Añadido padding al form
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
   }
 
-  &__field {
-    width: 100%;
-    font-size: 14px; // Aumentado para mejor legibilidad
+  &__content {
+    padding: 1rem;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    overflow-y: auto;
+    overflow-x: hidden;
+    height: calc(100vh - 2rem); // Ajuste de altura
 
-    ::ng-deep {
-      .mat-mdc-form-field-wrapper {
-        margin: 0;
-        padding-bottom: 1em;
-      }
-
-      .mat-mdc-text-field-wrapper {
-        padding-top: 0;
-        padding-bottom: 0;
-        height: 48px; // Aumentado para mejor usabilidad en móvil
-      }
-
-      .mat-mdc-form-field-flex {
-        min-height: 30px; // Aumentado para coincidir
-        padding-top: 0 !important;
-      }
-
-      .mat-mdc-form-field-infix {
-        padding: 12px 0;
-        min-height: unset;
-      }
-
-      .mdc-text-field--outlined {
-        --mdc-typography-subtitle1-line-height: 1.2;
-      }
-
-      .mat-mdc-select {
-        padding: 12px 0;
-      }
-
-      .mat-mdc-form-field-subscript-wrapper {
-        height: 20px;
-      }
-
-      .mat-mdc-form-field-error {
-        font-size: 12px;
-      }
-
-      input.mat-mdc-input-element {
-        margin-top: 0;
-        margin-bottom: 0;
-      }
+    &::-webkit-scrollbar {
+      display: none;
     }
   }
 }
-
 
 // Material Override Styles
 ::ng-deep {

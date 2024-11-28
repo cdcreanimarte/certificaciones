@@ -1,28 +1,36 @@
 $primary-color: #2c3e50;
 $secondary-color: #4a90e2;
 
-.certificate-preview {
+ .certificate-preview {
   width: 297mm;
   height: 210mm;
   margin: 0 auto;
   background: white;
-
-  /* Forzar las dimensiones independientemente del zoom */
   position: relative;
   transform-origin: top left;
-  transform: scale(1);
+  transform: scale(0.60); // Reducido de 0.7 a 0.45
   -webkit-print-color-adjust: exact;
   print-color-adjust: exact;
-
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   overflow: hidden;
-  /* height: 100%; */
   padding: 1rem;
 
   @media (max-width: 1200px) {
     margin-top: 1rem;
     height: auto;
+    transform: scale(0.6); // Aún más pequeño en pantallas medianas
+  }
+
+  @media (max-width: 768px) {
+    transform: scale(0.5); // Y más pequeño en móviles
+  }
+
+  // Importante: restaurar el tamaño original al imprimir
+  @media print {
+    transform: scale(1) !important;
+    width: 100%;
+    border: none;
   }
 
   &__content {
@@ -36,34 +44,25 @@ $secondary-color: #4a90e2;
     grid-template-columns: 192px 1fr;
     margin-left: 35px;
 
-    /* &::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: url('/images/template-certificado.png') center/cover no-repeat;
-      z-index: 1;
-    } */
     &::before {
       content: '';
       position: absolute;
-      top: 10px; // Añadido margin-top
+      top: 10px;
       left: 0;
       right: 0;
-      bottom: 35px; // Añadido margin-bottom
-      background: url('/images/template-certificado.png') center/100% 100% no-repeat; // Cambiado a 100% 100%
+      bottom: 35px;
+      background: url('/images/template-certificado.png') center/100% 100% no-repeat;
       z-index: 1;
     }
 
+    // Eliminamos las transformaciones específicas de content en media queries
+    // ya que ahora manejamos el escalado desde el contenedor padre
     @media (max-width: 1200px) {
-      transform: scale(0.7);
-      transform-origin: top center;
+      transform: none;
     }
 
     @media (max-width: 768px) {
-      transform: scale(0.5);
+      transform: none;
     }
   }
 }
@@ -173,7 +172,7 @@ $secondary-color: #4a90e2;
   text-align: left;
   margin-top: auto;
   margin-left: 16rem;
-  padding-top: 1rem;
+  padding-top: 1.5rem;
 
   p {
     margin: 2px 0 0.5px 0;
