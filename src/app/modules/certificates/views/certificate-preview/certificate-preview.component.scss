@@ -2,11 +2,22 @@ $primary-color: #2c3e50;
 $secondary-color: #4a90e2;
 
 .certificate-preview {
+  width: 297mm;
+  height: 210mm;
+  margin: 0 auto;
   background: white;
+
+  /* Forzar las dimensiones independientemente del zoom */
+  position: relative;
+  transform-origin: top left;
+  transform: scale(1);
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  overflow: auto;
-  height: 100%;
+  overflow: hidden;
+  /* height: 100%; */
   padding: 1rem;
 
   @media (max-width: 1200px) {
@@ -23,8 +34,9 @@ $secondary-color: #4a90e2;
     overflow: hidden;
     display: grid;
     grid-template-columns: 192px 1fr;
+    margin-left: 35px;
 
-    &::before {
+    /* &::before {
       content: '';
       position: absolute;
       top: 0;
@@ -32,6 +44,16 @@ $secondary-color: #4a90e2;
       right: 0;
       bottom: 0;
       background: url('/images/template-certificado.png') center/cover no-repeat;
+      z-index: 1;
+    } */
+    &::before {
+      content: '';
+      position: absolute;
+      top: 10px; // Añadido margin-top
+      left: 0;
+      right: 0;
+      bottom: 35px; // Añadido margin-bottom
+      background: url('/images/template-certificado.png') center/100% 100% no-repeat; // Cambiado a 100% 100%
       z-index: 1;
     }
 
@@ -51,7 +73,7 @@ $secondary-color: #4a90e2;
   z-index: 2;
   grid-column: 2;
   width: 100%;
-  margin-top: 120px;
+  margin-top: 110px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -118,12 +140,12 @@ $secondary-color: #4a90e2;
   }
 }
 
-.firmas {
+.signatures {
   display: flex;
   justify-content: center;
   width: 100%;
   z-index: 2;
-  margin-top: 2rem;
+
 
   .representante,
   .director {
@@ -152,7 +174,6 @@ $secondary-color: #4a90e2;
   margin-top: auto;
   margin-left: 16rem;
   padding-top: 1rem;
-  border-top: 1px solid rgba($primary-color, 0.1);
 
   p {
     margin: 2px 0 0.5px 0;
