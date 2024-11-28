@@ -23,6 +23,36 @@ export class CertificateService {
   }
 
   async generatePDF(element: HTMLElement): Promise<Blob> {
+    const pdf = new jsPDF({
+      orientation: 'landscape',
+      unit: 'mm',
+      format: 'letter',
+      compress: true
+    });
+
+    await html2canvas(element, {
+      scale: 2,
+      useCORS: true,
+      logging: false,
+      allowTaint: true,
+      backgroundColor: '#ffffff',
+      onclone: (document) => {
+        const clonedElement = document.querySelector('.verification-info');
+        if (clonedElement) {
+          clonedElement.querySelectorAll('*').forEach(el => {
+            (el as HTMLElement).style.userSelect = 'text';
+          });
+        }
+      }
+    }).then(canvas => {
+      const imgData = canvas.toDataURL('image/jpeg', 1.0);
+      pdf.addImage(imgData, 'JPEG', 0, 0, 279.4, 215.9);
+    });
+
+    return pdf.output('blob');
+  }
+
+  /* async generatePDF(element: HTMLElement): Promise<Blob> {
     const canvas = await html2canvas(element, {
       scale: 2,
       useCORS: true,
@@ -42,7 +72,7 @@ export class CertificateService {
     pdf.addImage(imgData, 'JPEG', 0, 0, 279.4, 215.9);
 
     return pdf.output('blob');
-  }
+  } */
 
   sendEmail(email: string, pdfBlob: Blob) {
     const formData = new FormData();

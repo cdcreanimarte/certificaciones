@@ -1,0 +1,20 @@
+export const COURSE_LIST = [
+  'Administración de Medicamentos',
+  'Aspectos Legales',
+  'Ataque con Sustancias Químicas',
+  'Atención a Victimas de Violencia Sexual',
+  'Cuidado del Donante',
+  'Cuidados Paliativos',
+  'Humanización en Salud',
+  'Inyectología Intramuscular',
+  'Manejo del Duelo',
+  'Primeros Auxilios',
+  'Protección Radiológica',
+  'Soporte Vital Avanzado',
+  'Soporte Vital Básico',
+  'Sueroterapia',
+  'Toma de Citología Cervicouterina',
+  'Toma de Muestras de Laboratorio',
+  'Toma de Muestras POCT',
+  'Víctimas del conflicto armado'
+];

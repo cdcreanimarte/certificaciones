@@ -1,18 +1,22 @@
-import { Component, ElementRef, ViewChild, OnInit } from '@angular/core';
+import { Component,  ElementRef,  ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
+  AbstractControl,
   FormBuilder,
   FormGroup,
   FormsModule,
   ReactiveFormsModule,
+  ValidationErrors,
+  ValidatorFn,
   Validators,
 } from '@angular/forms';
 import { CertificateService } from '../../services/certificate.service';
-import { NgxMaskPipe } from 'ngx-mask';
 import { CertificateCodeService } from '../../../../shared/services/certificate-code.service';
 import { DocumentType, ValidationRules } from '../../../../core/models/document-type';
 import { MaterialModule } from '../../../../shared/material.module';
 import { CertificatePreviewComponent } from "../certificate-preview/certificate-preview.component";
+import { COURSE_LIST } from '../../../../shared/constant/course-list';
+import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 
 @Component({
   selector: 'app-certificate-form',
@@ -21,21 +25,30 @@ import { CertificatePreviewComponent } from "../certificate-preview/certificate-
   styleUrl: './certificate-form.component.scss'
 })
 export class CertificateFormComponent {
-
-  //@ViewChild('certificateElement') certificateElement!: ElementRef;
   @ViewChild('certificateElement') certificateElement!: CertificatePreviewComponent;
+  @ViewChild('nameInput') nameInput!: ElementRef<HTMLInputElement>;
+  @ViewChild('docInput') docInput!: ElementRef<HTMLInputElement>;
+  @ViewChild('placeInput') placeInput!: ElementRef<HTMLInputElement>;
+  @ViewChild('emailInput') emailInput!: ElementRef<HTMLInputElement>;
+  @ViewChild('hoursInput') hoursInput!: ElementRef<HTMLInputElement>;
 
+  // Propiedades del formulario
   certificateForm!: FormGroup;
+  filteredCourses: string[] = COURSE_LIST;
+  readonly YEARS_TO_SHOW = 5;
+
+  // Estado del componente
   certificateGenerated = false;
-  currentDate = new Date();
   isGenerating = false;
+  currentDate = new Date();
+  yearSelected: Date = new Date();
+
+  // Datos del certificado
   documentTypes: DocumentType[] = [];
   selectedDocumentType: DocumentType | null = null;
   validityYears: number[] = [];
-  yearSelected = new Date();
   certificateCode: string = '';
   certificateMetadata: any = null;
-  readonly YEARS_TO_SHOW = 10; // Cantidad de años futuros a mostrar
 
   constructor(
     private fb: FormBuilder,
@@ -82,10 +95,16 @@ export class CertificateFormComponent {
     });
 
     this.certificateForm.get('validityYear')?.valueChanges.subscribe(value => {
-      console.log(value);
-      this.yearSelected = value;
+      if (value) {
+        this.yearSelected = new Date(parseInt(value), 0, 1);
+      }
     });
 
+    this.certificateForm.get('courseName')?.valueChanges.subscribe(value => {
+      if (typeof value === 'string' && !COURSE_LIST.includes(value)) {
+        this.filterCourses({ target: { value } });
+      }
+    });
   }
 
   private updateDocumentValidations(): void {
@@ -126,7 +145,24 @@ export class CertificateFormComponent {
     );
   }
 
-  loadDocumentTypes(): void {
+  onInputTransform(event: Event, controlName: string): void {
+    const input = event.target as HTMLInputElement;
+    let value = input.value;
+
+    switch(controlName) {
+      case 'studentName':
+      case 'expeditionPlace':
+        value = value.toUpperCase(); // Convertir a mayúsculas
+        break;
+      case 'email':
+        value = value.toLowerCase(); // Convertir a minúsculas
+        break;
+    }
+
+    this.certificateForm.get(controlName)?.setValue(value, { emitEvent: false });
+  }
+
+  private loadDocumentTypes(): void {
     this.certificateService.getDocumentTypes().subscribe({
       next: (data: DocumentType[]) => {
         this.documentTypes = data;
@@ -137,6 +173,40 @@ export class CertificateFormComponent {
         console.error('Error loading document types:', error);
       }
     });
+  }
+
+  filterCourses(event: any): void {
+    const value = event.target.value;
+    const selectedValue = this.certificateForm.get('courseName')?.value;
+
+    if (typeof selectedValue === 'string' && COURSE_LIST.includes(selectedValue) && value !== selectedValue) {
+      this.certificateForm.patchValue({ courseName: '' });
+    }
+
+    const filterValue = value.toLowerCase();
+    this.filteredCourses = COURSE_LIST.filter(course =>
+      course.toLowerCase().includes(filterValue)
+    );
+  }
+
+  displayFn(course: string): string {
+    return course || '';
+  }
+
+  onCourseSelected(event: MatAutocompleteSelectedEvent): void {
+    const input = document.querySelector('input[formControlName="courseName"]') as HTMLInputElement;
+    if (input) {
+      input.blur();
+    }
+  }
+
+  clearField(fieldName: string, input: ElementRef<HTMLInputElement> | HTMLInputElement): void {
+    this.certificateForm.get(fieldName)?.reset();
+    if (input instanceof ElementRef) {
+      input.nativeElement.focus();
+    } else {
+      input.focus();
+    }
   }
 
   getDocumentErrorMessage(): string {

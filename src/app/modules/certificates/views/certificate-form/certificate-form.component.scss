@@ -161,15 +161,37 @@ $transition-speed: 0.3s;
   }
 
   .mat-mdc-form-field-flex {
-    min-height: 40px !important;
+    min-height: 45px !important;
   }
 
   .mat-mdc-form-field-infix {
-    padding: 8px 0 !important;
+    padding: 12px 0 !important;
     min-height: unset !important;
   }
 
   .mat-mdc-raised-button {
     border-radius: $border-radius;
   }
+
+  .mat-form-field-suffix {
+    .mat-icon-button {
+      width: 24px;
+      height: 24px;
+      line-height: 24px;
+
+      .mat-icon {
+        font-size: 18px;
+        line-height: 18px;
+        height: 18px;
+        width: 18px;
+        color: rgba($text-color, 0.5);
+        transition: color $transition-speed ease;
+
+        &:hover {
+          color: $text-color;
+        }
+      }
+    }
+  }
 }
+
