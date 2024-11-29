@@ -17,10 +17,20 @@ import { MaterialModule } from '../../../../shared/material.module';
 import { CertificatePreviewComponent } from "../certificate-preview/certificate-preview.component";
 import { COURSE_LIST } from '../../../../shared/constant/course-list';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+import { OnlyLettersDirective } from '../../../../shared/directives/only-letters.directive';
+import { TrimValueDirective } from '../../../../shared/directives/trim-value.directive';
 
 @Component({
   selector: 'app-certificate-form',
-  imports: [CommonModule, ReactiveFormsModule, FormsModule, MaterialModule, CertificatePreviewComponent],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    FormsModule,
+    MaterialModule,
+    CertificatePreviewComponent,
+    OnlyLettersDirective,
+    TrimValueDirective
+  ],
   templateUrl: './certificate-form.component.html',
   styleUrl: './certificate-form.component.scss'
 })
@@ -63,7 +73,7 @@ export class CertificateFormComponent {
   }
 
   private initForm(): void {
-    /* this.certificateForm = this.fb.group({
+    this.certificateForm = this.fb.group({
       studentName: ['', [Validators.required, Validators.minLength(3)]],
       documentType: ['', [Validators.required]],
       documentNumber: ['', [Validators.required]],
@@ -72,9 +82,9 @@ export class CertificateFormComponent {
       hours: ['', [Validators.required, Validators.min(1)]],
       email: ['', [Validators.required, Validators.email]],
       validityYear: ['', [Validators.required]]
-    }); */
+    });
 
-    this.certificateForm = this.fb.group({
+    /* this.certificateForm = this.fb.group({
       studentName: ['NESTOR IVÁN MARTINEZ COBO', [Validators.required, Validators.minLength(3)]],
       documentType: ['CC', [Validators.required]],
       documentNumber: ['1061779667', [Validators.required]],
@@ -84,7 +94,7 @@ export class CertificateFormComponent {
       email: ['sksmartinez@gmail.com', [Validators.required, Validators.email]],
       validityYear: ['2026', [Validators.required]]
     });
-
+ */
     this.setupFormValidations();
   }
 

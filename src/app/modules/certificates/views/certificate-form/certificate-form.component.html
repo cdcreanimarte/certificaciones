@@ -1,6 +1,10 @@
 <mat-card class="certificate">
   <mat-card-content class="certificate__content">
-    <form [formGroup]="certificateForm" (ngSubmit)="generateCertificate()" class="certificate__form">
+    <form
+      [formGroup]="certificateForm"
+      (ngSubmit)="generateCertificate()"
+      class="certificate__form"
+    >
       <!-- Sección 1: Datos del Estudiante -->
       <div class="form-section">
         <h3 class="section-title">Datos del Estudiante</h3>
@@ -8,14 +12,27 @@
           <!-- Nombre del Estudiante -->
           <mat-form-field appearance="outline" class="certificate__field">
             <mat-label>Nombre del Estudiante</mat-label>
-            <input matInput formControlName="studentName" placeholder="Ingrese el nombre completo"
-            (input)="onInputTransform($event, 'studentName')"
-            #nameInput>
-            <button mat-icon-button matSuffix (click)="clearField('studentName', nameInput)">
+            <input
+              matInput
+              appOnlyLetters
+              formControlName="studentName"
+              placeholder="Ingrese el nombre completo"
+              (input)="onInputTransform($event, 'studentName')"
+              #nameInput
+            />
+            <button
+              mat-icon-button
+              matSuffix
+              (click)="clearField('studentName', nameInput)"
+            >
               <mat-icon>close</mat-icon>
             </button>
-            @if (certificateForm.get('studentName')?.touched && certificateForm.get('studentName')?.errors) {
-              <mat-error>El nombre es requerido y debe tener al menos 3 caracteres</mat-error>
+            @if (certificateForm.get('studentName')?.touched &&
+            certificateForm.get('studentName')?.errors) {
+            <mat-error
+              >El nombre es requerido y debe tener al menos 3
+              caracteres</mat-error
+            >
             }
           </mat-form-field>
         </div>
@@ -26,25 +43,34 @@
             <mat-label>Tipo de Documento</mat-label>
             <mat-select formControlName="documentType">
               @for (type of documentTypes; track type.tipo) {
-                <mat-option [value]="type.tipo">{{ type.tipo }}</mat-option>
+              <mat-option [value]="type.tipo">{{ type.tipo }}</mat-option>
               }
             </mat-select>
-            @if (certificateForm.get('documentType')?.touched && certificateForm.get('documentType')?.errors) {
-              <mat-error>Seleccione un tipo de documento</mat-error>
+            @if (certificateForm.get('documentType')?.touched &&
+            certificateForm.get('documentType')?.errors) {
+            <mat-error>Seleccione un tipo de documento</mat-error>
             }
           </mat-form-field>
 
           <!-- Número de Documento -->
           <mat-form-field appearance="outline" class="certificate__field">
             <mat-label>Número de Documento</mat-label>
-            <input matInput formControlName="documentNumber"
-                   [attr.maxlength]="getMaxLength()"
-                   placeholder="Ingrese el número de documento">
-            <button mat-icon-button matSuffix (click)="clearField('documentNumber', docInput)">
+            <input
+              matInput
+              formControlName="documentNumber"
+              [attr.maxlength]="getMaxLength()"
+              placeholder="Ingrese el número de documento"
+            />
+            <button
+              mat-icon-button
+              matSuffix
+              (click)="clearField('documentNumber', docInput)"
+            >
               <mat-icon>close</mat-icon>
             </button>
-            @if (certificateForm.get('documentNumber')?.touched && certificateForm.get('documentNumber')?.errors) {
-              <mat-error>{{ getDocumentErrorMessage() }}</mat-error>
+            @if (certificateForm.get('documentNumber')?.touched &&
+            certificateForm.get('documentNumber')?.errors) {
+            <mat-error>{{ getDocumentErrorMessage() }}</mat-error>
             }
           </mat-form-field>
         </div>
@@ -53,28 +79,48 @@
           <!-- Lugar de Expedición -->
           <mat-form-field appearance="outline" class="certificate__field">
             <mat-label>Lugar de Expedición</mat-label>
-            <input matInput formControlName="expeditionPlace" placeholder="Ciudad de expedición"
-            (input)="onInputTransform($event, 'expeditionPlace')"
-            #placeInput>
-            <button mat-icon-button matSuffix (click)="clearField('expeditionPlace', placeInput)">
+            <input
+              matInput
+              formControlName="expeditionPlace"
+              placeholder="Ciudad de expedición"
+              (input)="onInputTransform($event, 'expeditionPlace')"
+              #placeInput
+            />
+            <button
+              mat-icon-button
+              matSuffix
+              (click)="clearField('expeditionPlace', placeInput)"
+            >
               <mat-icon>close</mat-icon>
             </button>
-            @if (certificateForm.get('expeditionPlace')?.touched && certificateForm.get('expeditionPlace')?.errors) {
-              <mat-error>El lugar de expedición es requerido</mat-error>
+            @if (certificateForm.get('expeditionPlace')?.touched &&
+            certificateForm.get('expeditionPlace')?.errors) {
+            <mat-error>El lugar de expedición es requerido</mat-error>
             }
           </mat-form-field>
 
           <!-- Correo Electrónico -->
           <mat-form-field appearance="outline" class="certificate__field">
             <mat-label>Correo Electrónico</mat-label>
-            <input matInput type="email" formControlName="email" placeholder="ejemplo@correo.com"
-            (input)="onInputTransform($event, 'email')"
-            #emailInput>
-            <button mat-icon-button matSuffix (click)="clearField('email', emailInput)">
+            <input
+              matInput
+              appTrimValue
+              type="email"
+              formControlName="email"
+              placeholder="ejemplo@correo.com"
+              (input)="onInputTransform($event, 'email')"
+              #emailInput
+            />
+            <button
+              mat-icon-button
+              matSuffix
+              (click)="clearField('email', emailInput)"
+            >
               <mat-icon>close</mat-icon>
             </button>
-            @if (certificateForm.get('email')?.touched && certificateForm.get('email')?.errors) {
-              <mat-error>Ingrese un correo electrónico válido</mat-error>
+            @if (certificateForm.get('email')?.touched &&
+            certificateForm.get('email')?.errors) {
+            <mat-error>Ingrese un correo electrónico válido</mat-error>
             }
           </mat-form-field>
         </div>
@@ -87,15 +133,22 @@
           <!-- Nombre del Curso -->
           <mat-form-field appearance="outline" class="certificate__field">
             <mat-label>Nombre del Curso</mat-label>
-            <input type="text" matInput formControlName="courseName"
-                   [matAutocomplete]="auto"
-                   (input)="filterCourses($event)"
-                   #courseInput>
-            <mat-autocomplete #auto="matAutocomplete"
-                              [displayWith]="displayFn"
-                              (optionSelected)="onCourseSelected($event)">
+            <input
+              type="text"
+              appOnlyLetters
+              matInput
+              formControlName="courseName"
+              [matAutocomplete]="auto"
+              (input)="filterCourses($event)"
+              #courseInput
+            />
+            <mat-autocomplete
+              #auto="matAutocomplete"
+              [displayWith]="displayFn"
+              (optionSelected)="onCourseSelected($event)"
+            >
               @for (course of filteredCourses; track course) {
-                <mat-option [value]="course">{{course}}</mat-option>
+              <mat-option [value]="course">{{ course }}</mat-option>
               }
             </mat-autocomplete>
           </mat-form-field>
@@ -107,23 +160,35 @@
             <mat-label>Válido hasta el año</mat-label>
             <mat-select formControlName="validityYear">
               @for (year of validityYears; track year) {
-                <mat-option [value]="year">{{ year }}</mat-option>
+              <mat-option [value]="year">{{ year }}</mat-option>
               }
             </mat-select>
-            @if (certificateForm.get('validityYear')?.touched && certificateForm.get('validityYear')?.errors) {
-              <mat-error>Seleccione el año de validez</mat-error>
+            @if (certificateForm.get('validityYear')?.touched &&
+            certificateForm.get('validityYear')?.errors) {
+            <mat-error>Seleccione el año de validez</mat-error>
             }
           </mat-form-field>
 
           <!-- Cantidad de Horas -->
           <mat-form-field appearance="outline" class="certificate__field">
             <mat-label>Cantidad de Horas</mat-label>
-            <input matInput type="number" formControlName="hours" placeholder="0" min="1">
-            <button mat-icon-button matSuffix (click)="clearField('hours', hoursInput)">
+            <input
+              matInput
+              type="number"
+              formControlName="hours"
+              placeholder="0"
+              min="1"
+            />
+            <button
+              mat-icon-button
+              matSuffix
+              (click)="clearField('hours', hoursInput)"
+            >
               <mat-icon>close</mat-icon>
             </button>
-            @if (certificateForm.get('hours')?.touched && certificateForm.get('hours')?.errors) {
-              <mat-error>La cantidad de horas debe ser mayor a 0</mat-error>
+            @if (certificateForm.get('hours')?.touched &&
+            certificateForm.get('hours')?.errors) {
+            <mat-error>La cantidad de horas debe ser mayor a 0</mat-error>
             }
           </mat-form-field>
         </div>
@@ -131,16 +196,26 @@
 
       <div class="certificate__actions">
         <!-- Generate Certificate -->
-        <button mat-raised-button color="primary" type="submit" [disabled]="!certificateForm.valid || isGenerating">
+        <button
+          mat-raised-button
+          color="primary"
+          type="submit"
+          [disabled]="!certificateForm.valid || isGenerating"
+        >
           <mat-icon>assignment</mat-icon>
-          {{ isGenerating ? 'Generando...' : 'Generar Certificado' }}
+          {{ isGenerating ? "Generando..." : "Generar Certificado" }}
         </button>
 
         <!-- Download PDF -->
-        <button mat-raised-button color="accent" type="button" (click)="downloadCertificate()"
-                [disabled]="!certificateGenerated || isGenerating">
+        <button
+          mat-raised-button
+          color="accent"
+          type="button"
+          (click)="downloadCertificate()"
+          [disabled]="!certificateGenerated || isGenerating"
+        >
           <mat-icon>download</mat-icon>
-          {{ isGenerating ? 'Procesando...' : 'Descargar PDF' }}
+          {{ isGenerating ? "Procesando..." : "Descargar PDF" }}
         </button>
       </div>
     </form>
@@ -148,12 +223,13 @@
 </mat-card>
 
 <!-- Certificado Preview -->
-<!-- @if (certificateGenerated) { -->
-  <app-certificate-preview
-    #certificateElement
-    [formData]="certificateForm.value"
-    [currentDate]="currentDate"
-    [yearSelected]="yearSelected"
-    [certificateCode]="certificateCode">
-  </app-certificate-preview>
-<!-- } -->
+@if (certificateGenerated) {
+<app-certificate-preview
+  #certificateElement
+  [formData]="certificateForm.value"
+  [currentDate]="currentDate"
+  [yearSelected]="yearSelected"
+  [certificateCode]="certificateCode"
+>
+</app-certificate-preview>
+}
