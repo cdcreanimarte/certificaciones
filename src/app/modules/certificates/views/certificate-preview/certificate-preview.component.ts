@@ -4,7 +4,6 @@ import { NgxMaskPipe } from 'ngx-mask';
 
 @Component({
   selector: 'app-certificate-preview',
-  standalone: true,
   imports: [CommonModule,  NgxMaskPipe],
   templateUrl: './certificate-preview.component.html',
   styleUrl: './certificate-preview.component.scss',

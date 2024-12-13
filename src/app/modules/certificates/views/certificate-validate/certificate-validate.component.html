@@ -1,0 +1,99 @@
+<!-- certificate-validator.component.html -->
+<div class="validator">
+  <header class="validator__header">
+    <div class="validator__header-container">
+      <div class="validator__logo-area">
+        <button class="validator__menu-button">
+          <i class="fas fa-bars"></i>
+        </button>
+        <img class="logo" src="images/logo.png" style="width: 36px; height: 36px;" alt="Logo CDC">
+        <span class="validator__logo">CDC</span>
+      </div>
+
+      <nav class="validator__nav">
+        <button class="validator__nav-button">Cursos</button>
+        <button class="validator__nav-button validator__nav-button--primary" (click)="toggleLoginModal()">
+          <i class="fas fa-sign-in-alt"></i>
+          Iniciar Sesión
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="validator__main">
+    <div class="validator__container">
+      <div class="validator__search">
+        <div class="validator__search-header">
+          <div class="validator__content-wrapper">
+
+            <h1 class="validator__title">Consulta la validez de un certificado</h1>
+            <p class="validator__subtitle">Introduzca el código adjunto al certificado</p>
+          </div>
+        </div>
+
+        <div class="validator__search-form">
+          <input
+            type="text"
+            class="validator__input"
+
+            placeholder="Ingrese el código del certificado"
+          >
+          <button
+            class="validator__button validator__button--primary"
+            (click)="validateCertificate()"
+          >
+            Validar Certificado
+          </button>
+        </div>
+      </div>
+
+      <div class="validator__result" >
+        <div class="validator__card">
+          <div class="validator__card-header">
+            <h2 class="validator__card-title">Certificado Validado</h2>
+            <!-- <div class="validator__status-indicator" [ngClass]="{'validator__status-indicator--valid': certificateData.isValid, 'validator__status-indicator--invalid': !certificateData.isValid}">
+            </div> -->
+          </div>
+
+          <div class="validator__card-content">
+            <div class="validator__card-item">
+              <h3 class="validator__card-label">Curso</h3>
+              <p class="validator__card-value">{{certificateData.course}}</p>
+            </div>
+
+            <div class="validator__card-item">
+              <h3 class="validator__card-label">Alumno</h3>
+              <p class="validator__card-value">{{certificateData.student}}</p>
+            </div>
+
+            <div class="validator__card-item">
+              <h3 class="validator__card-label">Fechas</h3>
+              <p class="validator__card-value">{{certificateData.dates}}</p>
+            </div>
+
+            <div class="validator__card-item">
+              <h3 class="validator__card-label">Duración</h3>
+              <p class="validator__card-value">{{certificateData.duration}}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="validator__footer">
+    <div class="validator__footer-container">
+      <p class="validator__footer-text">© 2024 CDC REANIMARTE | TODOS LOS DERECHOS RESERVADOS. | V {{version}}</p>
+      <p class="validator__footer-text validator__footer-text--secondary">Popayán - Colombia</p>
+    </div>
+  </footer>
+</div>
+
+<!-- Login Modal -->
+<div class="modal" *ngIf="isLoginModalOpen">
+  <div class="modal__content">
+    <button class="modal__close" (click)="toggleLoginModal()">×</button>
+    <h2 class="modal__title">Iniciar Sesión</h2>
+    <!-- Modal content will be added based on your requirements -->
+  </div>
+</div>
