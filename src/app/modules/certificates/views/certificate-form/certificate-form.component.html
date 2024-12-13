@@ -148,7 +148,7 @@
 </mat-card>
 
 <!-- Certificado Preview -->
-<!-- @if (certificateGenerated) { -->
+@if (certificateGenerated) {
   <app-certificate-preview
     #certificateElement
     [formData]="certificateForm.value"
@@ -156,4 +156,4 @@
     [yearSelected]="yearSelected"
     [certificateCode]="certificateCode">
   </app-certificate-preview>
-<!-- } -->
+}

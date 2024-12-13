@@ -8,14 +8,6 @@ import { NgxMaskPipe } from 'ngx-mask';
   imports: [CommonModule,  NgxMaskPipe],
   templateUrl: './certificate-preview.component.html',
   styleUrl: './certificate-preview.component.scss',
-  styles: [`
-    :host {
-      display: block;
-      width: 100%;
-      overflow-x: auto;
-      padding: 1rem;
-    }
-  `]
 })
 export class CertificatePreviewComponent {
   @ViewChild('certificateElement') certificateElement!: ElementRef;

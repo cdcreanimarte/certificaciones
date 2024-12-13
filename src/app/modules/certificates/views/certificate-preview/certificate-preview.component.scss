@@ -1,6 +1,13 @@
 $primary-color: #2c3e50;
 $secondary-color: #4a90e2;
 
+:host {
+  display: block;
+  width: 100%;
+  overflow-x: auto;
+  padding: 1rem;
+}
+
  .certificate-preview {
   width: 297mm;
   height: 210mm;
@@ -51,8 +58,9 @@ $secondary-color: #4a90e2;
       left: 0;
       right: 0;
       bottom: 35px;
-      background: url('/images/template-certificado.png') center/100% 100% no-repeat;
+      background: url('../../../../../../public/images/template-certificado.png') center/100% 100% no-repeat;
       z-index: 1;
+      background-size: cover;
     }
 
     // Eliminamos las transformaciones específicas de content en media queries
