@@ -1,0 +1,44 @@
+<div class="login">
+  <h1 class="login__title">Inicia sesión para continuar</h1>
+
+  <form class="login__form">
+    <div class="login__form-group">
+      <mat-form-field appearance="fill" class="login__input">
+        <mat-label>Nombre de usuario o correo electrónico</mat-label>
+        <mat-icon matPrefix class="login__icon">email</mat-icon>
+        <input matInput placeholder="">
+      </mat-form-field>
+    </div>
+
+    <div class="login__form-group">
+      <mat-form-field appearance="fill" class="login__input">
+        <mat-label>Contraseña</mat-label>
+        <mat-icon matPrefix class="login__icon">vpn_key</mat-icon>
+        <input matInput [type]="hidePassword ? 'password' : 'text'" />
+        <button
+          mat-icon-button
+          matSuffix
+          (click)="togglePassword()"
+          [attr.aria-label]="'Hide password'"
+        >
+          <mat-icon>{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+        </button>
+      </mat-form-field>
+    </div>
+
+    <div class="login__options">
+      <a href="#" class="login__forgot-password">¿Se te olvidó tu contraseña?</a>
+      <mat-checkbox class="login__remember">Mantenerme Conectado</mat-checkbox>
+    </div>
+
+    <button mat-raised-button class="login__submit-btn">
+      Iniciar Sesión
+    </button>
+
+    <button mat-button class="login__cancel-btn" mat-dialog-close>
+      Cancelar
+    </button>
+
+    <p class="login__signup">¿No tienes una cuenta?</p>
+  </form>
+</div>

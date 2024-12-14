@@ -1,6 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import * as packageJson from './../../../../../../package.json';
+import { MatDialog } from '@angular/material/dialog';
+import { SignInComponent } from '../../../auth/views/sign-in/sign-in.component';
 
 @Component({
   selector: 'app-certificate-validate',
@@ -22,9 +24,7 @@ export class CertificateValidateComponent {
     isValid: true // Añadimos esta propiedad para controlar el estado del certificado
   };
 
-
-
-  constructor() {}
+  readonly dialog = inject(MatDialog);
 
   ngOnInit(): void {}
 
@@ -37,11 +37,23 @@ export class CertificateValidateComponent {
     }
   }
 
-  toggleLoginModal(): void {
+/*   toggleLoginModal(): void {
     this.isLoginModalOpen = !this.isLoginModalOpen;
-  }
+  } */
 
   toggleSidenav(): void {
     this.isSidenavOpen = !this.isSidenavOpen;
+  }
+
+
+  openDialog(enterAnimationDuration: string, exitAnimationDuration: string): void {
+    this.dialog.open(SignInComponent, {
+      width: '460px',
+      maxWidth: '460px',
+      enterAnimationDuration,
+      exitAnimationDuration,
+      panelClass: 'login-dialog',
+      autoFocus: true
+    });
   }
 }

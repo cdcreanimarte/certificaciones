@@ -1,4 +1,30 @@
 /* You can add global styles to this file, and also import other style files */
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+html,
+body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  font-family: 'Barlow', Helvetica, Arial, sans-serif;
+}
+
+::ng-deep .login-dialog .mat-mdc-dialog-container {
+  padding: 20px !important;
+  border-radius: 10px !important;
+}
+
+.mdc-text-field--filled:not(.mdc-text-field--disabled) {
+  background-color: white !important;
+}
+
+
+@media (max-width: 480px) {
+  .login-dialog {
+    .mat-mdc-dialog-container {
+      max-width: 100% !important;
+      width: 100% !important;
+      margin: 16px;
+    }
+  }
+}

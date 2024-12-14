@@ -12,7 +12,8 @@
 
       <nav class="validator__nav">
         <button class="validator__nav-button">Cursos</button>
-        <button class="validator__nav-button validator__nav-button--primary" (click)="toggleLoginModal()">
+
+        <button class="validator__nav-button validator__nav-button--primary" (click)="openDialog('200ms', '200ms')">
           <i class="fas fa-sign-in-alt"></i>
           Iniciar Sesión
         </button>
@@ -87,13 +88,4 @@
       <p class="validator__footer-text validator__footer-text--secondary">Popayán - Colombia</p>
     </div>
   </footer>
-</div>
-
-<!-- Login Modal -->
-<div class="modal" *ngIf="isLoginModalOpen">
-  <div class="modal__content">
-    <button class="modal__close" (click)="toggleLoginModal()">×</button>
-    <h2 class="modal__title">Iniciar Sesión</h2>
-    <!-- Modal content will be added based on your requirements -->
-  </div>
 </div>
