@@ -7,15 +7,17 @@
           <i class="fas fa-bars"></i>
         </button>
         <img class="logo" src="images/logo.png" style="width: 36px; height: 36px;" alt="Logo CDC">
-        <span class="validator__logo">CDC</span>
+        <span class="validator__logo"></span>
       </div>
 
       <nav class="validator__nav">
-        <button class="validator__nav-button">Cursos</button>
+        <!-- Cursos -->
+        <a class="validator__nav-button" mat-button href="https://cdcreanimarte.com/" target="_blank">Cursos</a>
 
-        <button class="validator__nav-button validator__nav-button--primary" (click)="openDialog('200ms', '200ms')">
-          <i class="fas fa-sign-in-alt"></i>
+        <!-- Iniciar Sesión -->
+        <button (click)="openDialog('200ms', '200ms')" mat-flat-button>
           Iniciar Sesión
+          <mat-icon>login</mat-icon>
         </button>
       </nav>
     </div>
@@ -33,17 +35,16 @@
         </div>
 
         <div class="validator__search-form">
-          <input
-            type="text"
-            class="validator__input"
+          <mat-form-field appearance="fill" class="login__input">
+            <mat-label>Código</mat-label>
+            <mat-icon matPrefix class="login__icon">star_rate</mat-icon>
+            <input matInput placeholder="">
+          </mat-form-field>
 
-            placeholder="Ingrese el código del certificado"
-          >
-          <button
-            class="validator__button validator__button--primary"
-            (click)="validateCertificate()"
-          >
-            Validar Certificado
+
+          <button mat-fab extended>
+            <mat-icon>verified_user</mat-icon>
+            VALIDAR CERTIFICADO
           </button>
         </div>
       </div>

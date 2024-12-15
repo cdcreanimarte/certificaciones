@@ -3,10 +3,11 @@ import { Component, inject } from '@angular/core';
 import * as packageJson from './../../../../../../package.json';
 import { MatDialog } from '@angular/material/dialog';
 import { SignInComponent } from '../../../auth/views/sign-in/sign-in.component';
+import { MaterialModule } from '../../../../shared/material.module';
 
 @Component({
   selector: 'app-certificate-validate',
-  imports: [CommonModule],
+  imports: [CommonModule, MaterialModule],
   templateUrl: './certificate-validate.component.html',
   styleUrl: './certificate-validate.component.scss'
 })
