@@ -15,6 +15,10 @@ export const routes: Routes = [
     loadChildren: () => import('./modules/certificates/certificate.routes').then(m => m.certificateRoutes),
   },
   {
+    path: 'list',
+    loadComponent: () => import('./modules/certificates/views/certificate-list/certificate-list.component').then(m => m.CertificateListComponent),
+  },
+  {
     path: '**',
     redirectTo: '',
   }

@@ -4,6 +4,7 @@ import * as packageJson from './../../../../../../package.json';
 import { MatDialog } from '@angular/material/dialog';
 import { SignInComponent } from '../../../auth/views/sign-in/sign-in.component';
 import { MaterialModule } from '../../../../shared/material.module';
+import { SignUpComponent } from '../../../auth/views/sign-up/sign-up.component';
 
 @Component({
   selector: 'app-certificate-validate',
@@ -47,8 +48,18 @@ export class CertificateValidateComponent {
   }
 
 
-  openDialog(enterAnimationDuration: string, exitAnimationDuration: string): void {
+  openDialogSignIn(enterAnimationDuration: string, exitAnimationDuration: string): void {
     this.dialog.open(SignInComponent, {
+      width: '460px',
+      maxWidth: '460px',
+      enterAnimationDuration,
+      exitAnimationDuration,
+      panelClass: 'login-dialog',
+      autoFocus: true
+    });
+  }
+  openDialogSignUp(enterAnimationDuration: string, exitAnimationDuration: string): void {
+    this.dialog.open(SignUpComponent, {
       width: '460px',
       maxWidth: '460px',
       enterAnimationDuration,

@@ -1,0 +1,74 @@
+<div class="register">
+  <h1 class="register__title">Registrar</h1>
+
+  <form
+    class="register__form"
+    [formGroup]="reactiveForm"
+    (ngSubmit)="onSubmit()"
+  >
+    <!-- Fullname -->
+    <div class="register__form-group">
+      <mat-form-field appearance="fill" class="register__input">
+        <mat-label>Nombre Completo</mat-label>
+        <mat-icon matPrefix class="register__icon">face</mat-icon>
+        <input formControlName="fullname" type="text" matInput placeholder="" />
+      </mat-form-field>
+      <!-- @if (isRequired('fullname')) {
+        <small>Campo requerido</small>
+      } -->
+    </div>
+
+    <!-- Email -->
+    <div class="register__form-group">
+      <mat-form-field appearance="fill" class="register__input">
+        <mat-label>Correo electrónico</mat-label>
+        <mat-icon matPrefix class="register__icon">email</mat-icon>
+        <input formControlName="email" type="email" matInput placeholder="" />
+      </mat-form-field>
+    <!-- @if (isRequired('email')) {
+      <small>Campo requerido</small>
+    } -->
+    <!-- @if (isEmail()) {
+    <small>Correo Inválido</small>
+    } -->
+    </div>
+
+    <!-- Password -->
+    <div class="register__form-group">
+      <mat-form-field appearance="fill" class="register__input">
+        <mat-label>Contraseña</mat-label>
+        <mat-icon matPrefix class="register__icon">key</mat-icon>
+        <input
+          formControlName="password"
+          matInput
+          [type]="hidePassword ? 'password' : 'text'"
+        />
+        <button
+          mat-icon-button
+          matSuffix
+          (click)="togglePassword()"
+          [attr.aria-label]="'Hide password'"
+        >
+          <mat-icon>{{
+            hidePassword ? "visibility_off" : "visibility"
+          }}</mat-icon>
+        </button>
+      </mat-form-field>
+    </div>
+
+    <div class="register__options">
+      <mat-checkbox formControlName="checkTerms" class="register__remember"
+        >Estoy de acuerdo con el tratamiento de datos personales Términos y
+        Condiciones y Política de Privacidad</mat-checkbox
+      >
+    </div>
+
+    <button mat-raised-button class="register__submit-btn">Registrar</button>
+
+    <button mat-button class="register__cancel-btn" mat-dialog-close>
+      Cancelar
+    </button>
+
+    <p class="register__signup">¿No tienes una cuenta?</p>
+  </form>
+</div>

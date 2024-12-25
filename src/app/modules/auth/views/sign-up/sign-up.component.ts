@@ -1,20 +1,26 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MaterialModule } from '../../../../shared/material.module';
+import {
+  Form,
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
+import { MaterialModule } from '../../../../shared/material.module';
+import { isEmail, isRequired } from '../../../../shared/utils/validators';
 import { AuthService } from '../../services/auth.service';
-import { Router } from '@angular/router';
 import { toast } from 'ngx-sonner';
-import { isRequired, isEmail } from '../../../../shared/utils/validators';
+import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-sign-in',
+  selector: 'app-sign-up',
   imports: [CommonModule, ReactiveFormsModule, MaterialModule],
-  templateUrl: './sign-in.component.html',
-  styleUrl: './sign-in.component.scss',
+  templateUrl: './sign-up.component.html',
+  styleUrl: './sign-up.component.scss',
 })
-export class SignInComponent {
+export class SignUpComponent {
   // * Injection
   private _fb = inject(FormBuilder);
   private _authSrv = inject(AuthService);
@@ -24,7 +30,7 @@ export class SignInComponent {
   reactiveForm!: FormGroup;
   hidePassword = true;
 
-  constructor(private dialogRef: MatDialogRef<SignInComponent>) {}
+  constructor(private dialogRef: MatDialogRef<SignUpComponent>) {}
 
   ngOnInit(): void {
     this.defocus();
@@ -43,9 +49,10 @@ export class SignInComponent {
 
   initForm(): void {
     this.reactiveForm = this._fb.nonNullable.group({
+      fullname: ['', [Validators.required]],
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],
-      rememberMe: [false], // Nuevo control para el checkbox
+      checkTerms: [false], // Nuevo control para el checkbox
     });
   }
 
@@ -53,9 +60,11 @@ export class SignInComponent {
     if (this.reactiveForm.invalid) return;
 
     try {
-      const { email, password } = this.reactiveForm.value;
-      await this._authSrv.signIn({ email, password });
-      toast.success('Hola Nuevamente!');
+      const { fullname, email, password } = this.reactiveForm.value;
+      await this._authSrv.signUp({ email, password });
+      toast.success('Registrado Exitoso!');
+      this._router.navigateByUrl('/list');
+      console.log(fullname, email, password);
     } catch (error) {
       toast.error('Error al registrarse');
       console.error(error);

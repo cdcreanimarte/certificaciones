@@ -14,8 +14,14 @@
         <!-- Cursos -->
         <a class="validator__nav-button" mat-button href="https://cdcreanimarte.com/" target="_blank">Cursos</a>
 
+        <!-- Register -->
+        <button (click)="openDialogSignUp('200ms', '200ms')" mat-flat-button>
+          Registrarse
+          <mat-icon>face</mat-icon>
+        </button>
+
         <!-- Iniciar Sesión -->
-        <button (click)="openDialog('200ms', '200ms')" mat-flat-button>
+        <button (click)="openDialogSignIn('200ms', '200ms')" mat-flat-button>
           Iniciar Sesión
           <mat-icon>login</mat-icon>
         </button>
