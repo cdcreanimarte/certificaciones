@@ -1,0 +1,1 @@
+import"./chunk-RA2WU32H.js";var o=[{path:"generate",loadComponent:()=>import("./chunk-55MZQABX.js").then(t=>t.CertificateFormComponent)},{path:"list",loadComponent:()=>import("./chunk-ERQTWH7F.js").then(t=>t.CertificateListComponent)}];export{o as certificateRoutes};
