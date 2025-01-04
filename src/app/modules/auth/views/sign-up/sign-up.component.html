@@ -25,10 +25,10 @@
         <mat-icon matPrefix class="register__icon">email</mat-icon>
         <input formControlName="email" type="email" matInput placeholder="" />
       </mat-form-field>
-    <!-- @if (isRequired('email')) {
+      <!-- @if (isRequired('email')) {
       <small>Campo requerido</small>
     } -->
-    <!-- @if (isEmail()) {
+      <!-- @if (isEmail()) {
     <small>Correo Inválido</small>
     } -->
     </div>
@@ -44,6 +44,7 @@
           [type]="hidePassword ? 'password' : 'text'"
         />
         <button
+          type="button"
           mat-icon-button
           matSuffix
           (click)="togglePassword()"
@@ -63,9 +64,16 @@
       >
     </div>
 
-    <button mat-raised-button class="register__submit-btn">Registrar</button>
+    <button type="submit" mat-raised-button class="register__submit-btn">
+      Registrar
+    </button>
 
-    <button mat-button class="register__cancel-btn" mat-dialog-close>
+    <button
+      type="button"
+      mat-button
+      class="register__cancel-btn"
+      mat-dialog-close
+    >
       Cancelar
     </button>
 

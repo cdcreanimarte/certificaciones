@@ -20,6 +20,7 @@
           [type]="hidePassword ? 'password' : 'text'"
         />
         <button
+          type="button"
           mat-icon-button
           matSuffix
           (click)="togglePassword()"
@@ -39,9 +40,9 @@
       <mat-checkbox formControlName="rememberMe" class="login__remember">Mantenerme Conectado</mat-checkbox>
     </div>
 
-    <button mat-raised-button class="login__submit-btn">Iniciar Sesión</button>
+    <button type="submit" mat-raised-button class="login__submit-btn">Iniciar Sesión</button>
 
-    <button mat-button class="login__cancel-btn" mat-dialog-close>
+    <button type="button" mat-button class="login__cancel-btn" mat-dialog-close>
       Cancelar
     </button>
 

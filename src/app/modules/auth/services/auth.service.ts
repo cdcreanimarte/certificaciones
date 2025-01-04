@@ -4,6 +4,7 @@ import {
   Auth,
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
+  signOut,
 } from '@angular/fire/auth';
 
 @Injectable({
@@ -22,5 +23,9 @@ export class AuthService {
       user.email,
       user.password
     );
+  }
+
+  logOut() {
+    return signOut(this._auth);
   }
 }

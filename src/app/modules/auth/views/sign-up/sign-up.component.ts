@@ -62,6 +62,7 @@ export class SignUpComponent {
     try {
       const { fullname, email, password } = this.reactiveForm.value;
       await this._authSrv.signUp({ email, password });
+      this.onNoClick();
       toast.success('Registrado Exitoso!');
       this._router.navigateByUrl('/list');
       console.log(fullname, email, password);
@@ -81,5 +82,9 @@ export class SignUpComponent {
 
   isEmail() {
     return isEmail(this.reactiveForm);
+  }
+
+  onNoClick(): void {
+    this.dialogRef.close();
   }
 }

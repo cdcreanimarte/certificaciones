@@ -43,8 +43,8 @@ export class SignInComponent {
 
   initForm(): void {
     this.reactiveForm = this._fb.nonNullable.group({
-      email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(6)]],
+      email: ['sksmartinez@gmail.com', [Validators.required, Validators.email]],
+      password: ['Skorpions1414@@##', [Validators.required, Validators.minLength(6)]],
       rememberMe: [false], // Nuevo control para el checkbox
     });
   }
@@ -55,9 +55,11 @@ export class SignInComponent {
     try {
       const { email, password } = this.reactiveForm.value;
       await this._authSrv.signIn({ email, password });
-      toast.success('Hola Nuevamente!');
+      this._router.navigateByUrl('/administration/list');
+
+      this.dialogRef.close();
     } catch (error) {
-      toast.error('Error al registrarse');
+      toast.error('Error al loguearse');
       console.error(error);
     }
   }

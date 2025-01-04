@@ -1,4 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { AuthService } from '../../../auth/services/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-certificate-list',
@@ -7,5 +9,15 @@ import { Component } from '@angular/core';
   styleUrl: './certificate-list.component.scss'
 })
 export class CertificateListComponent {
+
+  private _authSrv = inject(AuthService);
+  private _router = inject(Router);
+
+  async logout() {
+    await this._authSrv.logOut();
+    this._router.navigateByUrl('/');
+
+    console.log('Logout');
+  }
 
 }
