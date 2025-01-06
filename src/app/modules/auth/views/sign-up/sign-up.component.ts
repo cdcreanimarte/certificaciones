@@ -61,14 +61,18 @@ export class SignUpComponent {
 
     try {
       const { fullname, email, password } = this.reactiveForm.value;
-      await this._authSrv.signUp({ email, password });
-      this.onNoClick();
+      const { error } = await this._authSrv.signUp({ email, password });
+
+      if (error) { throw error };
+
+      this.dialogRef.close();
       toast.success('Registrado Exitoso!');
       this._router.navigateByUrl('/list');
-      console.log(fullname, email, password);
     } catch (error) {
-      toast.error('Error al registrarse');
-      console.error(error);
+      if(error instanceof Error){
+        toast.error('Opps!, '+ error.message);
+        console.error(error.message);
+      }
     }
   }
 
@@ -82,9 +86,5 @@ export class SignUpComponent {
 
   isEmail() {
     return isEmail(this.reactiveForm);
-  }
-
-  onNoClick(): void {
-    this.dialogRef.close();
   }
 }

@@ -1,20 +1,17 @@
 import { inject } from '@angular/core';
 import { CanMatchFn, Router } from '@angular/router';
-import { map } from 'rxjs';
-import { AuthStateService } from '../../shared/services/auth-state.service';
+import { AuthService } from '../../modules/auth/services/auth.service';
 
-export const authGuard: CanMatchFn = (route, segments) => {
+export const authGuard: CanMatchFn = async (route, segments) => {
   const router = inject(Router);
-  const authStateSrv = inject(AuthStateService);
+  const authSrv = inject(AuthService);
 
-  // * Verificar si el usuario está autenticado
-  return authStateSrv.authState$.pipe(
-    map(state => {
-      if (!state) {
-        router.navigate(['/auth/sign-in']);
-        return false;
-      }
-      return true;
-    })
-  );
+  const { data } = await authSrv.session();
+  console.log(data);
+
+  if (!data.session) {
+    router.navigate(['/']);
+  }
+
+  return !!data.session;
 }

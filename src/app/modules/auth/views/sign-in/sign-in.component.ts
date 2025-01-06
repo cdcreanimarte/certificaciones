@@ -54,13 +54,16 @@ export class SignInComponent {
 
     try {
       const { email, password } = this.reactiveForm.value;
-      await this._authSrv.signIn({ email, password });
-      this._router.navigateByUrl('/administration/list');
+      const { error } = await this._authSrv.signIn({ email, password });
+
+      if (error) { throw error };
 
       this.dialogRef.close();
+      this._router.navigateByUrl('/administration/list');
     } catch (error) {
-      toast.error('Error al loguearse');
-      console.error(error);
+      if(error instanceof Error){
+        toast.error('Opps!, '+ error.message);
+      }
     }
   }
 

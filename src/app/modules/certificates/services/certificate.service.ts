@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { computed, inject, Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { jsPDF } from 'jspdf';
 import html2canvas from 'html2canvas';
@@ -6,7 +6,9 @@ import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment.development';
 import { DocumentType } from '../../../core/models/document-type';
 import { format, endOfYear, startOfYear } from 'date-fns';
-import { CertificateCode, DecodedCertificateInfo } from '../../../core/models/certificate';
+import { Certificate, CertificateCode, CertificateCreate, CertificateState, DecodedCertificateInfo } from '../../../core/models/certificate';
+import { SupabaseService } from '../../../shared/services/supabase.service';
+import { AuthService } from '../../auth/services/auth.service';
 
 @Injectable({
   providedIn: 'root'
@@ -15,11 +17,163 @@ export class CertificateService {
   private readonly CERTIFICATE_PREFIX = 'CDC';
   private readonly HASH_LENGTH = 4;
   private readonly RANDOM_LENGTH = 4;
+  private readonly TABLE = 'certificates'; // Nombre de la tabla en Supabase
 
-  constructor(private http: HttpClient) {}
+  private _http = inject(HttpClient);
+  private _authSrv = inject(AuthService);
+  private _supabaseClient = inject(SupabaseService).supabaseClient;
+  private _state = signal<CertificateState>({ certificates: [], loading: false, error: '', selectedCertificate: null  });
+
+  // * Selectors
+  certificates = computed(() => this._state().certificates);
+  loading = computed(() => this._state().loading);
+  error = computed(() => this._state().error);
+  selectedCertificate = computed(() => this._state().selectedCertificate);
+
+  async list() {
+    try {
+      this._state.update((state) => ({ ...state, loading: true }));
+      const userId = await this._authSrv.getUserId();
+
+      const { data, error } = await this._supabaseClient
+        .from(this.TABLE)
+        .select()
+        .eq('user_id', userId)
+        .returns<Certificate[]>();
+
+      if (error) throw error;
+
+      if (data) {
+        this._state.update((state) => ({ ...state, certificates: data }));
+      }
+    } catch (error) {
+      this._state.update((state) => ({ ...state, error: 'Error fetching certificates' }));
+    } finally {
+      this._state.update((state) => ({ ...state, loading: false }));
+    }
+  }
+
+  async add(certificate: CertificateCreate) {
+    try {
+      const userId = await this._authSrv.getUserId();
+
+      const certificateToSave = {
+        ...certificate,
+        created_at: new Date().toISOString(),
+        user_id: userId
+      };
+
+      const { data, error } = await this._supabaseClient
+        .from(this.TABLE)
+        .insert(certificateToSave)
+        .select('*')
+        .single();
+
+      if (error) throw error;
+
+      if (data) {
+        this._state.update((state) => ({
+          ...state,
+          certificates: [...state.certificates, data]
+        }));
+      }
+
+      return data;
+    } catch (error) {
+      console.error('Error adding certificate:', error);
+      throw error;
+    }
+  }
+
+  async getOne(id: string) {
+    try {
+      this._state.update((state) => ({ ...state, loading: true }));
+      const userId = await this._authSrv.getUserId();
+
+      const { data, error } = await this._supabaseClient
+        .from(this.TABLE)
+        .select()
+        .eq('id', id)
+        .eq('user_id', userId)
+        .single();
+
+      if (error) throw error;
+
+      if (data) {
+        this._state.update((state) => ({
+          ...state,
+          selectedCertificate: data
+        }));
+      }
+
+      return data;
+    } catch (error) {
+      this._state.update((state) => ({
+        ...state,
+        error: 'Error fetching certificate'
+      }));
+      throw error;
+    } finally {
+      this._state.update((state) => ({ ...state, loading: false }));
+    }
+  }
+
+  async update(id: string, certificate: Partial<CertificateCreate>) {
+    try {
+      const userId = await this._authSrv.getUserId();
+
+      const { data, error } = await this._supabaseClient
+        .from(this.TABLE)
+        .update(certificate)
+        .eq('id', id)
+        .eq('user_id', userId)
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      if (data) {
+        this._state.update((state) => ({
+          ...state,
+          certificates: state.certificates.map(cert =>
+            cert.id === id ? { ...cert, ...data } : cert
+          )
+        }));
+      }
+
+      return data;
+    } catch (error) {
+      console.error('Error updating certificate:', error);
+      throw error;
+    }
+  }
+
+  async delete(id: string) {
+    try {
+      const userId = await this._authSrv.getUserId();
+
+      const { error } = await this._supabaseClient
+        .from(this.TABLE)
+        .delete()
+        .eq('id', id)
+        .eq('user_id', userId);
+
+      if (error) throw error;
+
+      this._state.update((state) => ({
+        ...state,
+        certificates: state.certificates.filter(cert => cert.id !== id)
+      }));
+
+      return true;
+    } catch (error) {
+      console.error('Error deleting certificate:', error);
+      throw error;
+    }
+  }
 
   getDocumentTypes(): Observable<DocumentType[]> {
-    return this.http.get<DocumentType[]>(`${environment.apiDocumentTypes}`);
+    return this._http.get<DocumentType[]>(`${environment.apiDocumentTypes}`);
   }
 
   async generatePDF(element: HTMLElement): Promise<Blob> {
@@ -51,28 +205,6 @@ export class CertificateService {
 
     return pdf.output('blob');
   }
-
-  /* async generatePDF(element: HTMLElement): Promise<Blob> {
-    const canvas = await html2canvas(element, {
-      scale: 2,
-      useCORS: true,
-      logging: false,
-      allowTaint: true,
-      backgroundColor: '#ffffff'
-    });
-
-    const pdf = new jsPDF({
-      orientation: 'landscape',
-      unit: 'mm',
-      format: 'letter',
-      compress: true
-    });
-
-    const imgData = canvas.toDataURL('image/jpeg', 1.0);
-    pdf.addImage(imgData, 'JPEG', 0, 0, 279.4, 215.9);
-
-    return pdf.output('blob');
-  } */
 
   sendEmail(email: string, pdfBlob: Blob) {
     const formData = new FormData();

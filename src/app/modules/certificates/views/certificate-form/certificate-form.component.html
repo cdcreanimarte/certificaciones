@@ -133,15 +133,23 @@
         <!-- Generate Certificate -->
         <button mat-raised-button color="primary" type="submit" [disabled]="!certificateForm.valid || isGenerating">
           <mat-icon>assignment</mat-icon>
-          {{ isGenerating ? 'Generando...' : 'Generar Certificado' }}
+          {{ isGenerating ? 'Generando...' : 'Previsualizar' }}
         </button>
 
-        <!-- Download PDF -->
+        <!-- Download PDF | Save -->
         <button mat-raised-button color="accent" type="button" (click)="downloadCertificate()"
                 [disabled]="!certificateGenerated || isGenerating">
           <mat-icon>download</mat-icon>
-          {{ isGenerating ? 'Procesando...' : 'Descargar PDF' }}
+          {{ isGenerating ? 'Procesando...' : 'Descargar' }}
         </button>
+
+        <!-- Save -->
+        <button mat-raised-button color="accent" type="button" (click)="onSubmit()"
+                [disabled]="!certificateGenerated || isGenerating">
+          <mat-icon>save</mat-icon>
+          {{ isGenerating ? 'Procesando...' : 'Guardar' }}
+        </button>
+
       </div>
     </form>
   </mat-card-content>

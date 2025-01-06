@@ -1,31 +1,36 @@
-import { User } from './../models/user';
 import { inject, Injectable } from '@angular/core';
-import {
-  Auth,
-  signInWithEmailAndPassword,
-  createUserWithEmailAndPassword,
-  signOut,
-} from '@angular/fire/auth';
+import { SupabaseService } from '../../../shared/services/supabase.service';
+import { SignInWithPasswordCredentials, SignUpWithPasswordCredentials } from '@supabase/supabase-js';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  private _auth = inject(Auth);
+  private _supabaseClient = inject(SupabaseService).supabaseClient;
 
-  signIn(user: User) {
-    return signInWithEmailAndPassword(this._auth, user.email, user.password);
+
+  signUp(credentials: SignUpWithPasswordCredentials) {
+    return this._supabaseClient.auth.signUp(credentials);
   }
 
-  signUp(user: User) {
-    return createUserWithEmailAndPassword(
-      this._auth,
-      user.email,
-      user.password
-    );
+  signIn(credentials: SignInWithPasswordCredentials) {
+    return this._supabaseClient.auth.signInWithPassword(credentials);
+  }
+
+  session() {
+    return this._supabaseClient.auth.getSession();
   }
 
   logOut() {
-    return signOut(this._auth);
+    return this._supabaseClient.auth.signOut();
+  }
+
+  // Nuevo método para obtener el ID del usuario
+  async getUserId(): Promise<string> {
+    const { data: { session } } = await this.session();
+    if (!session?.user.id) {
+      throw new Error('No hay usuario autenticado');
+    }
+    return session.user.id;
   }
 }

@@ -1,5 +1,28 @@
-<p>certificate-list works!</p>
+<section>
+  <div class="example-button-row">
+    <button mat-flat-button (click)="logout()">Salir</button>
+    <a mat-flat-button routerLink="/administration/new">Nuevo Certificado</a>
+  </div>
+</section>
 
-<h2>SALIR</h2>
+<div class="container">
+  <h2>Certificados</h2>
 
-<button (click)="logout()">Salir</button>
+  @if (loading()) {
+    <mat-spinner></mat-spinner>
+  }
+
+  @if (error()) {
+    <div class="error-message">
+      {{ error() }}
+      <button mat-button (click)="reloadCertificates()">Reintentar</button>
+    </div>
+  }
+
+  @if (!loading() && !error()) {
+    <app-table
+      [data]="certificates()"
+      (deleteRequest)="onDeleteCertificate($event)"
+      (editRequest)="onEditCertificate($event)"/>
+  }
+</div>

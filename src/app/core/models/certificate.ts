@@ -1,3 +1,27 @@
+export interface Certificate {
+  id: string;
+  studentName: string;
+  documentType: string;
+  documentNumber: string;
+  expeditionPlace: string;
+  courseName: string;
+  hours: string;
+  email: string;
+  validityYear: string;
+  code: string;
+  created_at?: string;
+  status?: 'active' | 'revoked';
+}
+
+export type CertificateCreate = Omit<Certificate, 'id'>
+
+export interface CertificateState {
+  certificates: Certificate[];
+  loading: boolean;
+  error: string;
+  selectedCertificate: Certificate | null;
+}
+
 export interface CertificateCode {
   code: string;
   metadata: {

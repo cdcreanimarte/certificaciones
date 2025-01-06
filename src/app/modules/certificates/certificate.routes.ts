@@ -2,7 +2,7 @@ import { Routes } from '@angular/router';
 
 export const certificateRoutes: Routes = [
   {
-    path: 'generate',
+    path: 'new',
     loadComponent: () => import('./views/certificate-form/certificate-form.component').then(m => m.CertificateFormComponent),
   },
   {

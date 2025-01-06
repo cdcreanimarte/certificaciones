@@ -1,4 +1,4 @@
-import { Component,  ElementRef,  ViewChild } from '@angular/core';
+import { Component,  ElementRef,  inject,  ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   AbstractControl,
@@ -17,6 +17,8 @@ import { MaterialModule } from '../../../../shared/material.module';
 import { CertificatePreviewComponent } from "../certificate-preview/certificate-preview.component";
 import { COURSE_LIST } from '../../../../shared/constant/course-list';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+import { CertificateCode, CertificateCreate } from '../../../../core/models/certificate';
+import { toast } from 'ngx-sonner';
 
 @Component({
   selector: 'app-certificate-form',
@@ -49,12 +51,11 @@ export class CertificateFormComponent {
   validityYears: number[] = [];
   certificateCode: string = '';
   certificateMetadata: any = null;
+  certificate!: CertificateCreate;
 
-  constructor(
-    private fb: FormBuilder,
-    private certificateService: CertificateService,
-    private certificateCodeSrv: CertificateCodeService
-  ) {}
+  private _fb = inject(FormBuilder);
+  private _certificateSrv = inject(CertificateService);
+  private _certificateCodeSrv = inject(CertificateCodeService);
 
   ngOnInit(): void {
     this.initForm();
@@ -63,7 +64,7 @@ export class CertificateFormComponent {
   }
 
   private initForm(): void {
-    this.certificateForm = this.fb.group({
+    this.certificateForm = this._fb.group({
       studentName: ['', [Validators.required, Validators.minLength(3)]],
       documentType: ['', [Validators.required]],
       documentNumber: ['', [Validators.required]],
@@ -74,7 +75,7 @@ export class CertificateFormComponent {
       validityYear: ['', [Validators.required]]
     });
 
-    /* this.certificateForm = this.fb.group({
+    this.certificateForm = this._fb.group({
       studentName: ['NESTOR IVÁN MARTINEZ COBO', [Validators.required, Validators.minLength(3)]],
       documentType: ['CC', [Validators.required]],
       documentNumber: ['1061779667', [Validators.required]],
@@ -83,7 +84,7 @@ export class CertificateFormComponent {
       hours: ['40', [Validators.required, Validators.min(1)]],
       email: ['sksmartinez@gmail.com', [Validators.required, Validators.email]],
       validityYear: ['2026', [Validators.required]]
-    }); */
+    });
 
     this.setupFormValidations();
   }
@@ -163,7 +164,7 @@ export class CertificateFormComponent {
   }
 
   private loadDocumentTypes(): void {
-    this.certificateService.getDocumentTypes().subscribe({
+    this._certificateSrv.getDocumentTypes().subscribe({
       next: (data: DocumentType[]) => {
         this.documentTypes = data;
         console.log(this.documentTypes);
@@ -276,25 +277,102 @@ export class CertificateFormComponent {
   }
 
   generateCertificate(): void {
-    if (this.certificateForm.valid) {
-      const formValues = this.certificateForm.value;
+    if (this.certificateForm.invalid) return;
+    console.log('🟢: ', this.certificateForm.value);
 
-      // Generar código único del certificado
-      const certCode = this.certificateCodeSrv.generateCertificateCode(
-        formValues.documentNumber,
-        parseInt(formValues.validityYear),
-        formValues.courseName
-      );
+    const formValues = this.certificateForm.value;
 
-      // Guardar el código y metadata para uso posterior
-      this.certificateCode = certCode.code;
-      this.certificateMetadata = certCode.metadata;
+    // Generar código único del certificado
+    const certCode: CertificateCode = this._certificateCodeSrv.generateCertificateCode(
+      formValues.documentNumber,
+      parseInt(formValues.validityYear),
+      formValues.courseName
+    );
 
-      // Activar la vista previa del certificado
-      this.certificateGenerated = true;
+    // Guardar el código y metadata para uso posterior
+    this.certificateCode = certCode.code;
+    this.certificateMetadata = certCode.metadata;
 
-      this.decode();
+    // Activar la vista previa del certificado
+    this.certificateGenerated = true;
+
+    const {
+      studentName,
+      documentType,
+      documentNumber,
+      expeditionPlace,
+      courseName,
+      hours,
+      email,
+      validityYear } = this.certificateForm.value;
+
+    this.certificate = {
+      studentName: studentName || '',
+      documentType: documentType || '',
+      documentNumber: documentNumber || '',
+      expeditionPlace: expeditionPlace || '',
+      courseName: courseName || '',
+      hours: hours || '',
+      email: email || '',
+      validityYear: validityYear || '',
+      code: this.certificateCode || ''
     }
+    //this.decode();
+  }
+
+  async downloadCertificate(): Promise<void> {
+    if (!this.certificateGenerated || this.isGenerating) return;
+
+    try {
+      this.isGenerating = true;
+      const element = this.certificateElement.getCertificateElement();
+      const pdfBlob = await this._certificateSrv.generatePDF(element);
+
+      // Luego descargamos el PDF
+      const url = window.URL.createObjectURL(pdfBlob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `Certificado_${this.certificateForm.get('studentName')?.value}.pdf`;
+      link.click();
+
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('Error en el proceso del certificado:', error);
+      toast.error('Error al procesar el certificado');
+    } finally {
+      this.isGenerating = false;
+    }
+  }
+
+  async onSubmit() {
+    if (!this.certificate) {
+      toast.error('No hay datos del certificado para guardar');
+      return;
+    }
+
+    try {
+      const certificateData: CertificateCreate = {
+        studentName: this.certificate.studentName,
+        documentType: this.certificate.documentType,
+        documentNumber: this.certificate.documentNumber,
+        expeditionPlace: this.certificate.expeditionPlace,
+        courseName: this.certificate.courseName,
+        hours: this.certificate.hours,
+        email: this.certificate.email,
+        validityYear: this.certificate.validityYear,
+        code: this.certificate.code
+      };
+
+      await this._certificateSrv.add(certificateData);
+      toast.success('Certificado guardado exitosamente');
+    } catch (error) {
+      console.error('Error al guardar el certificado:', error);
+      toast.error('El certificado no pudo ser guardado');
+    }
+  }
+
+  sendEmail(): void {
+    // Implementación pendiente del envío de email
   }
 
   decode(): void {
@@ -302,7 +380,7 @@ export class CertificateFormComponent {
     const documentNumber = this.certificateForm.get('documentNumber')?.value;
     console.log('Número de documento:', documentNumber);
 
-    const decodedInfo = this.certificateService.decodeCertificateCode(
+    const decodedInfo = this._certificateSrv.decodeCertificateCode(
       this.certificateCode,
       documentNumber
     );
@@ -317,32 +395,5 @@ export class CertificateFormComponent {
     } else {
       console.log('No se pudo decodificar el certificado');
     }
-  }
-
-  async downloadCertificate(): Promise<void> {
-    if (!this.certificateGenerated || this.isGenerating) return;
-
-    try {
-      this.isGenerating = true;
-      // Obtenemos el elemento DOM del componente hijo usando el método que expusimos
-      const element = this.certificateElement.getCertificateElement();
-      const pdfBlob = await this.certificateService.generatePDF(element);
-
-      const url = window.URL.createObjectURL(pdfBlob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = `Certificado_${this.certificateForm.get('studentName')?.value}.pdf`;
-      link.click();
-
-      window.URL.revokeObjectURL(url);
-    } catch (error) {
-      console.error('Error generating PDF:', error);
-    } finally {
-      this.isGenerating = false;
-    }
-  }
-
-  sendEmail(): void {
-    // Implementación pendiente del envío de email
   }
 }
