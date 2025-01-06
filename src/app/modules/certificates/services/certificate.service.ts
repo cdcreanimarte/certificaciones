@@ -172,6 +172,23 @@ export class CertificateService {
     }
   }
 
+  async validateCertificate(code: string): Promise<Certificate | null> {
+    try {
+      const { data, error } = await this._supabaseClient
+        .from(this.TABLE)
+        .select()
+        .eq('code', code)
+        .single();
+
+      if (error) throw error;
+
+      return data;
+    } catch (error) {
+      console.error('Error validating certificate:', error);
+      throw error;
+    }
+  }
+
   getDocumentTypes(): Observable<DocumentType[]> {
     return this._http.get<DocumentType[]>(`${environment.apiDocumentTypes}`);
   }

@@ -1,5 +1,5 @@
-<!-- certificate-validator.component.html -->
 <div class="validator">
+  <!-- Header existente -->
   <header class="validator__header">
     <div class="validator__header-container">
       <div class="validator__logo-area">
@@ -11,16 +11,11 @@
       </div>
 
       <nav class="validator__nav">
-        <!-- Cursos -->
         <a class="validator__nav-button" mat-button href="https://cdcreanimarte.com/" target="_blank">Cursos</a>
-
-        <!-- Register -->
         <button (click)="openDialogSignUp('200ms', '200ms')" mat-flat-button>
           Registrarse
           <mat-icon>face</mat-icon>
         </button>
-
-        <!-- Iniciar Sesión -->
         <button (click)="openDialogSignIn('200ms', '200ms')" mat-flat-button>
           Iniciar Sesión
           <mat-icon>login</mat-icon>
@@ -29,66 +24,91 @@
     </div>
   </header>
 
+  <!-- Main con formulario reactivo -->
   <main class="validator__main">
     <div class="validator__container">
       <div class="validator__search">
         <div class="validator__search-header">
           <div class="validator__content-wrapper">
-
             <h1 class="validator__title">Consulta la validez de un certificado</h1>
             <p class="validator__subtitle">Introduzca el código adjunto al certificado</p>
           </div>
         </div>
 
-        <div class="validator__search-form">
+        <form [formGroup]="validateForm" (ngSubmit)="validateCertificate()" class="validator__search-form">
           <mat-form-field appearance="fill" class="login__input">
             <mat-label>Código</mat-label>
             <mat-icon matPrefix class="login__icon">star_rate</mat-icon>
-            <input matInput placeholder="">
+            <input matInput formControlName="code" placeholder="Ingrese el código del certificado">
+            @if (validateForm.get('code')?.touched && validateForm.get('code')?.errors) {
+              <mat-error>
+                El código es requerido y debe tener al menos 8 caracteres
+              </mat-error>
+            }
           </mat-form-field>
 
-
-          <button mat-fab extended>
+          <button mat-fab extended type="submit" >
             <mat-icon>verified_user</mat-icon>
-            VALIDAR CERTIFICADO
+            {{ loading ? 'VALIDANDO...' : 'VALIDAR CERTIFICADO' }}
           </button>
-        </div>
+        </form>
       </div>
 
-      <div class="validator__result" >
-        <div class="validator__card">
-          <div class="validator__card-header">
-            <h2 class="validator__card-title">Certificado Validado</h2>
-            <!-- <div class="validator__status-indicator" [ngClass]="{'validator__status-indicator--valid': certificateData.isValid, 'validator__status-indicator--invalid': !certificateData.isValid}">
-            </div> -->
-          </div>
-
-          <div class="validator__card-content">
-            <div class="validator__card-item">
-              <h3 class="validator__card-label">Curso</h3>
-              <p class="validator__card-value">{{certificateData.course}}</p>
+      @if (showCertificate && certificateData) {
+        <div class="validator__result">
+          <div class="validator__card">
+            <div class="validator__card-header">
+              <h2 class="validator__card-title" [class]="isCertificateActive(certificateData.validityYear) ? 'text-active' : 'text-revoked'">
+                {{ getStatusText() }}
+              </h2>
+              <div>
+                <mat-icon>verified</mat-icon>
+              </div>
             </div>
 
-            <div class="validator__card-item">
-              <h3 class="validator__card-label">Alumno</h3>
-              <p class="validator__card-value">{{certificateData.student}}</p>
-            </div>
+            <div class="validator__card-content">
+              <div class="validator__card-item">
+                <h3 class="validator__card-label">Código</h3>
+                <p class="validator__card-value">{{certificateData.code}}</p>
+              </div>
 
-            <div class="validator__card-item">
-              <h3 class="validator__card-label">Fechas</h3>
-              <p class="validator__card-value">{{certificateData.dates}}</p>
-            </div>
+              <div class="validator__card-item">
+                <h3 class="validator__card-label">Curso</h3>
+                <p class="validator__card-value">{{certificateData.courseName}}</p>
+              </div>
 
-            <div class="validator__card-item">
-              <h3 class="validator__card-label">Duración</h3>
-              <p class="validator__card-value">{{certificateData.duration}}</p>
+              <div class="validator__card-item">
+                <h3 class="validator__card-label">Estudiante</h3>
+                <p class="validator__card-value">{{certificateData.studentName}}</p>
+              </div>
+
+              <div class="validator__card-item">
+                <h3 class="validator__card-label">Documento</h3>
+                <p class="validator__card-value">{{certificateData.documentType}} {{certificateData.documentNumber}}</p>
+              </div>
+
+              <div class="validator__card-item">
+                <h3 class="validator__card-label">Fecha de Expedición</h3>
+                <p class="validator__card-value">{{certificateData.created_at | date:'dd/MM/yyyy'}}</p>
+              </div>
+
+              <div class="validator__card-item">
+                <h3 class="validator__card-label">Válido Hasta</h3>
+                <p class="validator__card-value">Año {{certificateData.validityYear}}</p>
+              </div>
+
+              <div class="validator__card-item">
+                <h3 class="validator__card-label">Duración</h3>
+                <p class="validator__card-value">{{certificateData.hours}} horas</p>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      }
     </div>
   </main>
 
+  <!-- Footer existente -->
   <footer class="validator__footer">
     <div class="validator__footer-container">
       <p class="validator__footer-text">© 2024 CDC REANIMARTE | TODOS LOS DERECHOS RESERVADOS. | V {{version}}</p>
