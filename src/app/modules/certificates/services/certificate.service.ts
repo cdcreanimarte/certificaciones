@@ -178,9 +178,17 @@ export class CertificateService {
         .from(this.TABLE)
         .select()
         .eq('code', code)
-        .single();
+        .maybeSingle(); // Usamos maybeSingle en lugar de single
 
-      if (error) throw error;
+      // Si hay error que no sea de "no resultados", lo lanzamos
+      if (error && error.code !== 'PGRST116') {
+        throw error;
+      }
+
+      // Si no hay datos o hay error de "no resultados", retornamos null
+      if (!data || error?.code === 'PGRST116') {
+        return null;
+      }
 
       return data;
     } catch (error) {

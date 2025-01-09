@@ -38,7 +38,6 @@
         <form [formGroup]="validateForm" (ngSubmit)="validateCertificate()" class="validator__search-form">
           <mat-form-field appearance="fill" class="login__input">
             <mat-label>Código</mat-label>
-            <mat-icon matPrefix class="login__icon">star_rate</mat-icon>
             <input matInput formControlName="code" placeholder="Ingrese el código del certificado">
             @if (validateForm.get('code')?.touched && validateForm.get('code')?.errors) {
               <mat-error>
