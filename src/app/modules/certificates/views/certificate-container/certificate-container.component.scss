@@ -4,42 +4,33 @@ $text-color: #4a5568;
 
 :host {
   display: grid;
-  grid-template-columns: minmax(200px, 540px) 1fr;
-  gap: 1rem;
-  padding: 0.5rem;
+  grid-template-columns: minmax(600px, 650px) 1fr;
+  gap: 1.5rem;
   height: 100vh;
-  overflow-y: auto;
-  overflow-x: hidden;
   background: #f5f7fa;
-  -ms-overflow-style: none;
-  scrollbar-width: none;
+  max-height: 100vh;
+  overflow: hidden; // Evita scroll en el contenedor principal
 
-  &::-webkit-scrollbar {
-    display: none;
-  }
-
-  @media (max-width: 1200px) {
+  @media (max-width: 1400px) {
     grid-template-columns: 1fr;
     height: auto;
-  }
-
-  // Estilos específicos para cuando el formulario está en un modal
-  &.modal-view {
-    display: block;
-    height: auto;
-    overflow: visible;
+    max-height: none;
   }
 }
 
-// Estilos para el contenedor de la vista previa
-app-certificate-preview {
-  display: block;
-  height: 100%;
-  overflow-y: auto;
-  -ms-overflow-style: none;
-  scrollbar-width: none;
+.preview-container {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  height: calc(100vh - 2rem); // Altura total menos padding
+  display: flex;
+  justify-content: center;
+  align-items: center; // Centra verticalmente
+  overflow: hidden; // Evita scroll
 
-  &::-webkit-scrollbar {
-    display: none;
+  @media (max-width: 1400px) {
+    height: auto;
+    min-height: 800px;
+    margin-top: 1rem;
   }
 }

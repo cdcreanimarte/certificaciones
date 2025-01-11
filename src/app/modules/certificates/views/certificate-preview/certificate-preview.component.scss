@@ -2,11 +2,13 @@ $primary-color: #2c3e50;
 $secondary-color: #4a90e2;
 
 :host {
-  display: block;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   width: 100%;
-  overflow-x: auto;
-  padding: 1rem;
+  height: 100%;
 }
+
 
  .certificate-preview {
   width: 297mm;
@@ -15,7 +17,6 @@ $secondary-color: #4a90e2;
   background: white;
   position: relative;
   transform-origin: top left;
-  transform: scale(0.60); // Reducido de 0.7 a 0.45
   -webkit-print-color-adjust: exact;
   print-color-adjust: exact;
   border-radius: 8px;
@@ -26,16 +27,16 @@ $secondary-color: #4a90e2;
   @media (max-width: 1200px) {
     margin-top: 1rem;
     height: auto;
-    transform: scale(0.6); // Aún más pequeño en pantallas medianas
+    transform: scale(1); // Aún más pequeño en pantallas medianas
   }
 
   @media (max-width: 768px) {
-    transform: scale(0.5); // Y más pequeño en móviles
+    transform: scale(1); // Y más pequeño en móviles
   }
 
   // Importante: restaurar el tamaño original al imprimir
   @media print {
-    transform: scale(1) !important;
+    transform: scale(.3) !important;
     width: 100%;
     border: none;
   }

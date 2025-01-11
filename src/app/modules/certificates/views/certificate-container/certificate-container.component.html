@@ -9,10 +9,12 @@
 
 <!-- Certificado Preview -->
 @if (certificateGenerated) {
-  <app-certificate-preview
-    #certificateElement
-    [formData]="certificateData"
-    [currentDate]="currentDate"
-    [yearSelected]="yearSelected"
-    [certificateCode]="certificateCode"/>
+  <div class="preview-container">
+    <app-certificate-preview
+      #certificateElement
+      [formData]="certificateData"
+      [currentDate]="currentDate"
+      [yearSelected]="yearSelected"
+      [certificateCode]="certificateCode"/>
+  </div>
 }
