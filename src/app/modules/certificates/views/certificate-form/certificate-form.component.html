@@ -6,9 +6,9 @@
         <h3 class="section-title">Datos del Estudiante</h3>
         <div class="form-row full-width">
           <!-- Nombre del Estudiante -->
-          <mat-form-field appearance="outline" class="certificate__field">
+          <mat-form-field appearance="fill" class="certificate__field">
             <mat-label>Nombre del Estudiante</mat-label>
-            <input matInput formControlName="studentName" placeholder="Ingrese el nombre completo"
+            <input matInput formControlName="studentName"
             (input)="onInputTransform($event, 'studentName')"
             #nameInput>
             <button mat-icon-button matSuffix (click)="clearField('studentName', nameInput)">
@@ -22,7 +22,7 @@
 
         <div class="form-row two-columns">
           <!-- Tipo de Documento -->
-          <mat-form-field appearance="outline" class="certificate__field">
+          <mat-form-field appearance="fill" class="certificate__field">
             <mat-label>Tipo de Documento</mat-label>
             <mat-select formControlName="documentType">
               @for (type of documentTypes; track type.tipo) {
@@ -35,11 +35,10 @@
           </mat-form-field>
 
           <!-- Número de Documento -->
-          <mat-form-field appearance="outline" class="certificate__field">
+          <mat-form-field appearance="fill" class="certificate__field">
             <mat-label>Número de Documento</mat-label>
             <input matInput formControlName="documentNumber"
-                   [attr.maxlength]="getMaxLength()"
-                   placeholder="Ingrese el número de documento">
+                   [attr.maxlength]="getMaxLength()">
             <button mat-icon-button matSuffix (click)="clearField('documentNumber', docInput)">
               <mat-icon>close</mat-icon>
             </button>
@@ -51,9 +50,9 @@
 
         <div class="form-row two-columns">
           <!-- Lugar de Expedición -->
-          <mat-form-field appearance="outline" class="certificate__field">
+          <mat-form-field appearance="fill" class="certificate__field">
             <mat-label>Lugar de Expedición</mat-label>
-            <input matInput formControlName="expeditionPlace" placeholder="Ciudad de expedición"
+            <input matInput formControlName="expeditionPlace"
             (input)="onInputTransform($event, 'expeditionPlace')"
             #placeInput>
             <button mat-icon-button matSuffix (click)="clearField('expeditionPlace', placeInput)">
@@ -65,9 +64,9 @@
           </mat-form-field>
 
           <!-- Correo Electrónico -->
-          <mat-form-field appearance="outline" class="certificate__field">
+          <mat-form-field appearance="fill" class="certificate__field">
             <mat-label>Correo Electrónico</mat-label>
-            <input matInput type="email" formControlName="email" placeholder="ejemplo@correo.com"
+            <input matInput type="email" formControlName="email"
             (input)="onInputTransform($event, 'email')"
             #emailInput>
             <button mat-icon-button matSuffix (click)="clearField('email', emailInput)">
@@ -85,7 +84,7 @@
         <h3 class="section-title">Datos del Curso</h3>
         <div class="form-row full-width">
           <!-- Nombre del Curso -->
-          <mat-form-field appearance="outline" class="certificate__field">
+          <mat-form-field appearance="fill" class="certificate__field">
             <mat-label>Nombre del Curso</mat-label>
             <input type="text" matInput formControlName="courseName"
                    [matAutocomplete]="auto"
@@ -103,7 +102,7 @@
 
         <div class="form-row two-columns">
           <!-- Válido hasta el año -->
-          <mat-form-field appearance="outline" class="certificate__field">
+          <mat-form-field appearance="fill" class="certificate__field">
             <mat-label>Válido hasta el año</mat-label>
             <mat-select formControlName="validityYear">
               @for (year of validityYears; track year) {
@@ -116,9 +115,9 @@
           </mat-form-field>
 
           <!-- Cantidad de Horas -->
-          <mat-form-field appearance="outline" class="certificate__field">
+          <mat-form-field appearance="fill" class="certificate__field">
             <mat-label>Cantidad de Horas</mat-label>
-            <input matInput type="number" formControlName="hours" placeholder="0" min="1">
+            <input matInput type="number" formControlName="hours" min="1">
             <button mat-icon-button matSuffix (click)="clearField('hours', hoursInput)">
               <mat-icon>close</mat-icon>
             </button>
@@ -131,37 +130,27 @@
 
       <div class="certificate__actions">
         <!-- Generate Certificate -->
-        <button mat-raised-button color="primary" type="submit" [disabled]="!certificateForm.valid || isGenerating">
+        <button mat-raised-button color="primary" type="submit"
+                [disabled]="!certificateForm.valid">
           <mat-icon>assignment</mat-icon>
-          {{ isGenerating ? 'Generando...' : 'Previsualizar' }}
+          Previsualizar
         </button>
 
-        <!-- Download PDF | Save -->
-        <button mat-raised-button color="accent" type="button" (click)="downloadCertificate()"
-                [disabled]="!certificateGenerated || isGenerating">
+        <!-- Download PDF -->
+        <button mat-raised-button color="accent" type="button"
+                (click)="downloadCertificate()">
           <mat-icon>download</mat-icon>
-          {{ isGenerating ? 'Procesando...' : 'Descargar' }}
+          Descargar
         </button>
 
         <!-- Save -->
-        <button mat-raised-button color="accent" type="button" (click)="onSubmit()"
-                [disabled]="!certificateGenerated || isGenerating">
+        <button mat-raised-button color="accent" type="button"
+        (click)="onSubmit()"
+        [disabled]="!certificateForm.valid || !certificateCode">
           <mat-icon>save</mat-icon>
-          {{ isGenerating ? 'Procesando...' : 'Guardar' }}
+          Guardar
         </button>
-
       </div>
     </form>
   </mat-card-content>
 </mat-card>
-
-<!-- Certificado Preview -->
-@if (certificateGenerated) {
-  <app-certificate-preview
-    #certificateElement
-    [formData]="certificateForm.value"
-    [currentDate]="currentDate"
-    [yearSelected]="yearSelected"
-    [certificateCode]="certificateCode">
-  </app-certificate-preview>
-}

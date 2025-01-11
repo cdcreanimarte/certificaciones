@@ -1,0 +1,45 @@
+// Variables
+$primary-color: #2c3e50;
+$text-color: #4a5568;
+
+:host {
+  display: grid;
+  grid-template-columns: minmax(200px, 540px) 1fr;
+  gap: 1rem;
+  padding: 0.5rem;
+  height: 100vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  background: #f5f7fa;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  @media (max-width: 1200px) {
+    grid-template-columns: 1fr;
+    height: auto;
+  }
+
+  // Estilos específicos para cuando el formulario está en un modal
+  &.modal-view {
+    display: block;
+    height: auto;
+    overflow: visible;
+  }
+}
+
+// Estilos para el contenedor de la vista previa
+app-certificate-preview {
+  display: block;
+  height: 100%;
+  overflow-y: auto;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}

@@ -1,20 +1,16 @@
-import { Component,  ElementRef,  inject,  ViewChild } from '@angular/core';
+import { Component,  ElementRef,  EventEmitter,  inject,  Input,  Output,  ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
-  AbstractControl,
   FormBuilder,
   FormGroup,
   FormsModule,
   ReactiveFormsModule,
-  ValidationErrors,
-  ValidatorFn,
   Validators,
 } from '@angular/forms';
 import { CertificateService } from '../../services/certificate.service';
 import { CertificateCodeService } from '../../../../shared/services/certificate-code.service';
 import { DocumentType, ValidationRules } from '../../../../core/models/document-type';
 import { MaterialModule } from '../../../../shared/material.module';
-import { CertificatePreviewComponent } from "../certificate-preview/certificate-preview.component";
 import { COURSE_LIST } from '../../../../shared/constant/course-list';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { CertificateCode, CertificateCreate } from '../../../../core/models/certificate';
@@ -22,17 +18,24 @@ import { toast } from 'ngx-sonner';
 
 @Component({
   selector: 'app-certificate-form',
-  imports: [CommonModule, ReactiveFormsModule, FormsModule, MaterialModule, CertificatePreviewComponent],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, MaterialModule],
   templateUrl: './certificate-form.component.html',
   styleUrl: './certificate-form.component.scss'
 })
 export class CertificateFormComponent {
-  @ViewChild('certificateElement') certificateElement!: CertificatePreviewComponent;
   @ViewChild('nameInput') nameInput!: ElementRef<HTMLInputElement>;
   @ViewChild('docInput') docInput!: ElementRef<HTMLInputElement>;
   @ViewChild('placeInput') placeInput!: ElementRef<HTMLInputElement>;
   @ViewChild('emailInput') emailInput!: ElementRef<HTMLInputElement>;
   @ViewChild('hoursInput') hoursInput!: ElementRef<HTMLInputElement>;
+
+  @Input() isPreviewGenerated = false;
+  @Input() certificateCode: string = '';
+
+  @Output() previewGenerated = new EventEmitter<any>();
+  @Output() downloadRequested = new EventEmitter<void>();
+  @Output() saveRequested = new EventEmitter<CertificateCreate>();
+  @Output() formValueChanged = new EventEmitter<any>();
 
   // Propiedades del formulario
   certificateForm!: FormGroup;
@@ -49,7 +52,6 @@ export class CertificateFormComponent {
   documentTypes: DocumentType[] = [];
   selectedDocumentType: DocumentType | null = null;
   validityYears: number[] = [];
-  certificateCode: string = '';
   certificateMetadata: any = null;
   certificate!: CertificateCreate;
 
@@ -105,6 +107,11 @@ export class CertificateFormComponent {
       if (typeof value === 'string' && !COURSE_LIST.includes(value)) {
         this.filterCourses({ target: { value } });
       }
+    });
+
+    // Suscribirse a cambios del formulario
+    this.certificateForm.valueChanges.subscribe(value => {
+      this.formValueChanged.emit(value);
     });
   }
 
@@ -278,97 +285,44 @@ export class CertificateFormComponent {
 
   generateCertificate(): void {
     if (this.certificateForm.invalid) return;
-    console.log('🟢: ', this.certificateForm.value);
 
     const formValues = this.certificateForm.value;
-
-    // Generar código único del certificado
     const certCode: CertificateCode = this._certificateCodeSrv.generateCertificateCode(
       formValues.documentNumber,
       parseInt(formValues.validityYear),
       formValues.courseName
     );
 
-    // Guardar el código y metadata para uso posterior
-    this.certificateCode = certCode.code;
-    this.certificateMetadata = certCode.metadata;
-
-    // Activar la vista previa del certificado
-    this.certificateGenerated = true;
-
-    const {
-      studentName,
-      documentType,
-      documentNumber,
-      expeditionPlace,
-      courseName,
-      hours,
-      email,
-      validityYear } = this.certificateForm.value;
-
-    this.certificate = {
-      studentName: studentName || '',
-      documentType: documentType || '',
-      documentNumber: documentNumber || '',
-      expeditionPlace: expeditionPlace || '',
-      courseName: courseName || '',
-      hours: hours || '',
-      email: email || '',
-      validityYear: validityYear || '',
-      code: this.certificateCode || ''
-    }
-    //this.decode();
+    // En lugar de manejar internamente la vista previa, emitimos los datos
+    this.previewGenerated.emit({
+      formData: formValues,
+      certCode: certCode
+    });
   }
 
-  async downloadCertificate(): Promise<void> {
-    if (!this.certificateGenerated || this.isGenerating) return;
-
-    try {
-      this.isGenerating = true;
-      const element = this.certificateElement.getCertificateElement();
-      const pdfBlob = await this._certificateSrv.generatePDF(element);
-
-      // Luego descargamos el PDF
-      const url = window.URL.createObjectURL(pdfBlob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = `Certificado_${this.certificateForm.get('studentName')?.value}.pdf`;
-      link.click();
-
-      window.URL.revokeObjectURL(url);
-    } catch (error) {
-      console.error('Error en el proceso del certificado:', error);
-      toast.error('Error al procesar el certificado');
-    } finally {
-      this.isGenerating = false;
-    }
+  downloadCertificate(): void {
+    this.downloadRequested.emit();
   }
 
-  async onSubmit() {
-    if (!this.certificate) {
+  onSubmit(): void {
+    if (!this.certificateForm.value || !this.certificateCode) {
       toast.error('No hay datos del certificado para guardar');
       return;
     }
 
-    try {
-      const certificateData: CertificateCreate = {
-        studentName: this.certificate.studentName,
-        documentType: this.certificate.documentType,
-        documentNumber: this.certificate.documentNumber,
-        expeditionPlace: this.certificate.expeditionPlace,
-        courseName: this.certificate.courseName,
-        hours: this.certificate.hours,
-        email: this.certificate.email,
-        validityYear: this.certificate.validityYear,
-        code: this.certificate.code
-      };
+    const certificateData: CertificateCreate = {
+      studentName: this.certificateForm.value.studentName,
+      documentType: this.certificateForm.value.documentType,
+      documentNumber: this.certificateForm.value.documentNumber,
+      expeditionPlace: this.certificateForm.value.expeditionPlace,
+      courseName: this.certificateForm.value.courseName,
+      hours: this.certificateForm.value.hours,
+      email: this.certificateForm.value.email,
+      validityYear: this.certificateForm.value.validityYear,
+      code: this.certificateCode
+    };
 
-      await this._certificateSrv.add(certificateData);
-      toast.success('Certificado guardado exitosamente');
-    } catch (error) {
-      console.error('Error al guardar el certificado:', error);
-      toast.error('El certificado no pudo ser guardado');
-    }
+    this.saveRequested.emit(certificateData);
   }
 
   sendEmail(): void {

@@ -5,13 +5,10 @@ import { format, endOfYear, startOfYear } from 'date-fns';
   providedIn: 'root'
 })
 export class CertificateCodeService {
-  private readonly CERTIFICATE_PREFIX = 'CDC';
-  private readonly HASH_LENGTH = 4;
-  private readonly RANDOM_LENGTH = 4;
+  private readonly CERTIFICATE_PREFIX = 'CDC';  // Mantenemos CDC
+  private readonly HASH_LENGTH = 3;            // 3 caracteres para el hash
+  private readonly RANDOM_LENGTH = 2;          // 2 caracteres aleatorios
 
-  /**
-   * Genera un código único para un certificado
-   */
   generateCertificateCode(
     studentId: string,
     validityYear: number,
@@ -21,11 +18,11 @@ export class CertificateCodeService {
     const currentYear = now.getFullYear();
 
     // Generar componentes del código
-    const yearCode = this.generateYearCode(currentYear, validityYear);
-    const studentHash = this.hashString(studentId).slice(0, this.HASH_LENGTH);
-    const randomComponent = this.generateRandomString(this.RANDOM_LENGTH);
+    const yearCode = this.generateYearCode(currentYear);          // 2 caracteres
+    const studentHash = this.hashString(studentId).slice(0, this.HASH_LENGTH); // 3 caracteres
+    const randomComponent = this.generateRandomString(this.RANDOM_LENGTH);  // 2 caracteres
 
-    // Construir código completo
+    // Construir código completo: CDC-24B5FXY (CDC- + 7 caracteres)
     const code = `${this.CERTIFICATE_PREFIX}-${yearCode}${studentHash}${randomComponent}`;
 
     return {
@@ -49,12 +46,38 @@ export class CertificateCodeService {
     };
   }
 
-  /**
-   * Decodifica completamente un código de certificado y verifica su autenticidad
-   * @param code - Código del certificado
-   * @param studentId - Número de documento para verificación (opcional)
-   * @returns Información detallada del certificado y verificación
-   */
+  private generateYearCode(currentYear: number): string {
+    // Solo usamos los últimos dos dígitos del año actual
+    return format(new Date(currentYear, 0), 'yy');
+  }
+
+  private generateRandomString(length: number): string {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    return Array.from(
+      { length },
+      () => chars.charAt(Math.floor(Math.random() * chars.length))
+    ).join('');
+  }
+
+  private hashString(str: string): string {
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+      const char = str.charCodeAt(i);
+      hash = ((hash << 5) - hash) + char;
+      hash = hash & hash;
+    }
+    // Convertimos el hash a una combinación de letras y números
+    const hashStr = Math.abs(hash).toString(36).toUpperCase();
+    return hashStr.replace(/[^A-Z0-9]/g, '');
+  }
+
+  validateCertificateCode(code: string): boolean {
+    const pattern = new RegExp(
+      `^${this.CERTIFICATE_PREFIX}-[A-Z0-9]{7}$`  // Validamos CDC- seguido de exactamente 7 caracteres alfanuméricos
+    );
+    return pattern.test(code);
+  }
+
   decodeCertificateCode(code: string, studentId?: string): DecodedCertificateInfo | null {
     if (!this.validateCertificateCode(code)) {
       return null;
@@ -65,14 +88,15 @@ export class CertificateCodeService {
       const [prefix, components] = code.split('-');
 
       // Extraer cada parte del código
-      const issuedYear = parseInt('20' + components.slice(0, 2));
-      const duration = parseInt(components.slice(2, 4));
-      const storedHash = components.slice(4, 4 + this.HASH_LENGTH);
-      const randomPart = components.slice(4 + this.HASH_LENGTH);
+      const yearCode = components.slice(0, 2);         // Primeros 2 caracteres son el año
+      const storedHash = components.slice(2, 5);       // Siguientes 3 caracteres son el hash
+      const randomPart = components.slice(5, 7);       // Últimos 2 caracteres son aleatorios
+
+      const issuedYear = parseInt('20' + yearCode);
 
       // Calcular fechas
       const startDate = new Date(issuedYear, 0, 1);
-      const endDate = new Date(issuedYear + duration, 11, 31);
+      const endDate = new Date(issuedYear, 11, 31);
 
       // Verificar autenticidad si se proporciona el número de documento
       let isAuthentic = false;
@@ -90,8 +114,8 @@ export class CertificateCodeService {
         details: {
           prefix,
           issuedYear,
-          validityYears: duration,
-          endYear: issuedYear + duration,
+          validityYears: 1,  // Ajustado a 1 año por defecto
+          endYear: issuedYear,
           studentHash: storedHash,
           randomIdentifier: randomPart,
           dates: {
@@ -110,48 +134,6 @@ export class CertificateCodeService {
       console.error('Error decoding certificate:', error);
       return null;
     }
-  }
-
-  /**
-   * Genera el código del año
-   */
-  private generateYearCode(currentYear: number, validityYear: number): string {
-    const yearDiff = validityYear - currentYear;
-    return `${format(new Date(currentYear, 0), 'yy')}${yearDiff.toString().padStart(2, '0')}`;
-  }
-
-  /**
-   * Genera una cadena aleatoria
-   */
-  private generateRandomString(length: number): string {
-    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-    return Array.from(
-      { length },
-      () => chars.charAt(Math.floor(Math.random() * chars.length))
-    ).join('');
-  }
-
-  /**
-   * Genera un hash consistente de una cadena
-   */
-  private hashString(str: string): string {
-    let hash = 0;
-    for (let i = 0; i < str.length; i++) {
-      const char = str.charCodeAt(i);
-      hash = ((hash << 5) - hash) + char;
-      hash = hash & hash;
-    }
-    return Math.abs(hash).toString(16).toUpperCase();
-  }
-
-  /**
-   * Valida el formato del código
-   */
-  validateCertificateCode(code: string): boolean {
-    const pattern = new RegExp(
-      `^${this.CERTIFICATE_PREFIX}-\\d{4}[A-Z0-9]{${this.HASH_LENGTH + this.RANDOM_LENGTH}}$`
-    );
-    return pattern.test(code);
   }
 }
 

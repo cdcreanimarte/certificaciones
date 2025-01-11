@@ -39,11 +39,6 @@
           <mat-form-field appearance="fill" class="login__input">
             <mat-label>Código</mat-label>
             <input matInput formControlName="code" placeholder="Ingrese el código del certificado">
-            @if (validateForm.get('code')?.touched && validateForm.get('code')?.errors) {
-              <mat-error>
-                El código es requerido y debe tener al menos 8 caracteres
-              </mat-error>
-            }
           </mat-form-field>
 
           <button mat-fab extended type="submit" >

@@ -1,9 +1,10 @@
+import { CertificateContainerComponent } from './views/certificate-container/certificate-container.component';
 import { Routes } from '@angular/router';
 
 export const certificateRoutes: Routes = [
   {
     path: 'new',
-    loadComponent: () => import('./views/certificate-form/certificate-form.component').then(m => m.CertificateFormComponent),
+    loadComponent: () => import('./views/certificate-container/certificate-container.component').then(m => m.CertificateContainerComponent),
   },
   {
     path: 'list',
