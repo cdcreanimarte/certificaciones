@@ -1,20 +1,22 @@
-<!-- certificate Form -->
-<app-certificate-form
-[isPreviewGenerated]="certificateGenerated"
-[certificateCode]="certificateCode"
-(previewGenerated)="onPreviewGenerated($event)"
-(formValueChanged)="onFormValueChanged($event)"
-(downloadRequested)="onDownloadRequested()"
-(saveRequested)="onSaveRequested($event)"/>
+<div class="page-container">
+  <!-- certificate Form -->
+  <app-certificate-form
+  [isPreviewGenerated]="certificateGenerated"
+  [certificateCode]="certificateCode"
+  (previewGenerated)="onPreviewGenerated($event)"
+  (formValueChanged)="onFormValueChanged($event)"
+  (downloadRequested)="onDownloadRequested()"
+  (saveRequested)="onSaveRequested($event)"/>
 
-<!-- Certificado Preview -->
-@if (certificateGenerated) {
-  <div class="preview-container">
-    <app-certificate-preview
-      #certificateElement
-      [formData]="certificateData"
-      [currentDate]="currentDate"
-      [yearSelected]="yearSelected"
-      [certificateCode]="certificateCode"/>
-  </div>
-}
+  <!-- Certificado Preview -->
+  @if (certificateGenerated) {
+    <div class="preview-container">
+      <app-certificate-preview
+        #certificateElement
+        [formData]="certificateData"
+        [currentDate]="currentDate"
+        [yearSelected]="yearSelected"
+        [certificateCode]="certificateCode"/>
+    </div>
+  }
+</div>

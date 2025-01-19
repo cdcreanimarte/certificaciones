@@ -55,20 +55,11 @@
 
     <!-- Actions Column -->
     <ng-container matColumnDef="actions">
-      <th mat-header-cell *matHeaderCellDef> Acciones </th>
+      <th mat-header-cell *matHeaderCellDef></th>
       <td mat-cell *matCellDef="let row">
-        <button mat-icon-button [matTooltip]="'Editar certificado'" (click)="onEdit(row)">
-          <mat-icon>edit</mat-icon>
-        </button>
         <button mat-icon-button [matTooltip]="'Eliminar certificado'" (click)="onDelete(row)">
           <mat-icon>delete</mat-icon>
         </button>
-        <!-- <button mat-icon-button [matTooltip]="'Ver certificado'" (click)="onView(row)">
-          <mat-icon>visibility</mat-icon>
-        </button>
-        <button mat-icon-button [matTooltip]="'Descargar PDF'" (click)="onDownload(row)">
-          <mat-icon>download</mat-icon>
-        </button> -->
       </td>
     </ng-container>
 

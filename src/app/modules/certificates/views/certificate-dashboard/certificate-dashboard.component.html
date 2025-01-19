@@ -1,0 +1,43 @@
+<div class="page-container">
+  <mat-grid-list cols="4" rowHeight="350px" gutterSize="16">
+    <div class="dashboard-container">
+      <mat-grid-list cols="4" rowHeight="350px" gutterSize="16" class="dashboard-grid">
+        <!-- KPI Cards -->
+        <mat-grid-tile [colspan]="1" [rowspan]="1">
+          <mat-card class="dashboard-card">
+            <mat-card-header>
+              <mat-card-title>Certificados Totales</mat-card-title>
+              <button mat-icon-button [matMenuTriggerFor]="menu" class="more-button">
+                <mat-icon>more_vert</mat-icon>
+              </button>
+              <mat-menu #menu="matMenu">
+                <button mat-menu-item>Ver detalles</button>
+                <button mat-menu-item>Actualizar</button>
+              </mat-menu>
+            </mat-card-header>
+            <mat-card-content class="dashboard-card-content">
+              <div class="stats-value">1,234</div>
+              <div class="stats-delta positive">+12% vs mes anterior</div>
+            </mat-card-content>
+          </mat-card>
+        </mat-grid-tile>
+
+        <!-- Gráfica Principal -->
+        <mat-grid-tile [colspan]="2" [rowspan]="2">
+          <mat-card class="dashboard-card">
+            <mat-card-header>
+              <mat-card-title>Certificados por Mes</mat-card-title>
+            </mat-card-header>
+            <mat-card-content class="dashboard-card-content">
+              <!-- Aquí irá el componente de gráfica -->
+              <div class="chart-placeholder">Gráfica de Tendencias</div>
+            </mat-card-content>
+          </mat-card>
+        </mat-grid-tile>
+
+        <!-- Más widgets... -->
+      </mat-grid-list>
+    </div>
+  </mat-grid-list>
+</div>
+

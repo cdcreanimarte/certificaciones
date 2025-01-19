@@ -1,0 +1,16 @@
+<div class="admin-layout">
+  <app-header (menuToggle)="sidenav.toggle()"></app-header>
+
+  <mat-sidenav-container class="sidenav-container">
+    <mat-sidenav #sidenav mode="side" [opened]="true">
+      <app-sidenav></app-sidenav>
+    </mat-sidenav>
+
+    <mat-sidenav-content>
+      <div class="content-wrapper">
+        <router-outlet/>
+      </div>
+      <app-footer></app-footer>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+</div>

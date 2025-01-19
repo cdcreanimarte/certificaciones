@@ -7,6 +7,7 @@ import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
 import { toast } from 'ngx-sonner';
 import { isRequired, isEmail } from '../../../../shared/utils/validators';
+import { ROUTES } from '../../../../shared/constant/routes';
 
 @Component({
   selector: 'app-sign-in',
@@ -59,7 +60,7 @@ export class SignInComponent {
       if (error) { throw error };
 
       this.dialogRef.close();
-      this._router.navigateByUrl('/administration/list');
+      this._router.navigateByUrl(`/administration/${ROUTES.DASHBOARD}`);
     } catch (error) {
       if(error instanceof Error){
         toast.error('Opps!, '+ error.message);

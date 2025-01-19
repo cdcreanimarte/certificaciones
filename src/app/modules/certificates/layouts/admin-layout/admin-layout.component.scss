@@ -1,0 +1,54 @@
+// admin-layout.component.scss
+$header-height: 64px;
+$footer-height: 64px;
+$content-padding: 24px;
+
+.admin-layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+
+  .sidenav-container {
+    flex: 1;
+
+    mat-sidenav {
+      width: 250px;
+      border-right: 1px solid rgba(0, 0, 0, 0.12);
+    }
+
+    mat-sidenav-content {
+      display: flex;
+      flex-direction: column;
+      min-height: calc(100vh - #{$header-height});
+
+      .content-wrapper {
+        flex: 1;
+        padding: $content-padding;
+        overflow-y: auto;
+
+        // Agregamos animación para las transiciones de ruta
+        ::ng-deep router-outlet + * {
+          display: block;
+          animation: fadeIn 0.3s ease-in-out;
+        }
+      }
+
+      app-footer {
+        flex-shrink: 0;
+        height: $footer-height;
+      }
+    }
+  }
+}
+
+// Animación para transiciones de ruta
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

@@ -136,13 +136,6 @@
           Previsualizar
         </button>
 
-        <!-- Download PDF -->
-        <button mat-raised-button color="accent" type="button"
-                (click)="downloadCertificate()">
-          <mat-icon>download</mat-icon>
-          Descargar
-        </button>
-
         <!-- Save -->
         <button mat-raised-button color="accent" type="button"
         (click)="onSubmit()"
@@ -150,6 +143,15 @@
           <mat-icon>save</mat-icon>
           Guardar
         </button>
+
+        <!-- Download PDF -->
+        <button mat-raised-button color="accent" type="button"
+          (click)="downloadCertificate()"
+          [disabled]="!certificateForm.valid || !certificateCode">
+          <mat-icon>download</mat-icon>
+          Descargar
+        </button>
+
       </div>
     </form>
   </mat-card-content>

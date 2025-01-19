@@ -1,28 +1,30 @@
-<section>
-  <div class="example-button-row">
-    <button mat-flat-button (click)="logout()">Salir</button>
-    <a mat-flat-button routerLink="/administration/new">Nuevo Certificado</a>
-  </div>
-</section>
-
-<div class="container">
-  <h2>Certificados</h2>
-
-  @if (loading()) {
-    <mat-spinner></mat-spinner>
-  }
-
-  @if (error()) {
-    <div class="error-message">
-      {{ error() }}
-      <button mat-button (click)="reloadCertificates()">Reintentar</button>
+<div class="page-container">
+  <section>
+    <div class="example-button-row">
+      <button mat-flat-button (click)="logout()">Salir</button>
+      <a mat-flat-button routerLink="/administration/new">Nuevo Certificado</a>
     </div>
-  }
+  </section>
 
-  @if (!loading() && !error()) {
-    <app-table
-      [data]="certificates()"
-      (deleteRequest)="onDeleteCertificate($event)"
-      (editRequest)="onEditCertificate($event)"/>
-  }
+  <div class="container">
+    <h2>Certificados</h2>
+
+    @if (loading()) {
+      <mat-spinner></mat-spinner>
+    }
+
+    @if (error()) {
+      <div class="error-message">
+        {{ error() }}
+        <button mat-button (click)="reloadCertificates()">Reintentar</button>
+      </div>
+    }
+
+    @if (!loading() && !error()) {
+      <app-table
+        [data]="certificates()"
+        (deleteRequest)="onDeleteCertificate($event)"
+        (editRequest)="onEditCertificate($event)"/>
+    }
+  </div>
 </div>

@@ -18,6 +18,16 @@ body {
   background-color: white !important;
 }
 
+.page-container {
+  margin: -10px; // Compensar el padding del content-wrapper
+  padding: 10px;
+  min-height: calc(100% + 48px); // Compensar los márgenes negativos
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+
 
 @media (max-width: 480px) {
   .login-dialog {
