@@ -54,22 +54,26 @@ export class CertificateContainerComponent {
     if (!this.certificateGenerated || this.isGenerating) return;
 
     try {
-      this.isGenerating = true;
-      const element = this.certificateElement.getCertificateElement();
-      const pdfBlob = await this._certificateSrv.generatePDF(element);
+        this.isGenerating = true;
+        const pdfBlob = await this._certificateSrv.generatePDF(
+            this.certificateData,
+            this.currentDate,
+            this.yearSelected,
+            this.certificateCode
+        );
 
-      const url = window.URL.createObjectURL(pdfBlob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = `Certificado_${this.certificateData.studentName}.pdf`;
-      link.click();
+        const url = window.URL.createObjectURL(pdfBlob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `Certificado_${this.certificateData.studentName}.pdf`;
+        link.click();
 
-      window.URL.revokeObjectURL(url);
+        window.URL.revokeObjectURL(url);
     } catch (error) {
-      console.error('Error en el proceso del certificado:', error);
-      toast.error('Error al procesar el certificado');
+        console.error('Error en el proceso del certificado:', error);
+        toast.error('Error al procesar el certificado');
     } finally {
-      this.isGenerating = false;
+        this.isGenerating = false;
     }
   }
 

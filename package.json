@@ -27,6 +27,7 @@
     "@supabase/supabase-js": "^2.47.10",
     "date-fns": "^4.1.0",
     "html2pdf.js": "^0.10.2",
+    "jspdf": "^2.5.2",
     "ngx-mask": "^19.0.0",
     "ngx-sonner": "^3.0.0",
     "pdfmake": "^0.2.18",

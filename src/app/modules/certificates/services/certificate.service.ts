@@ -1,7 +1,6 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { jsPDF } from 'jspdf';
-import html2canvas from 'html2canvas';
 import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment.development';
 import { DocumentType } from '../../../core/models/document-type';
@@ -201,34 +200,115 @@ export class CertificateService {
     return this._http.get<DocumentType[]>(`${environment.apiDocumentTypes}`);
   }
 
-  async generatePDF(element: HTMLElement): Promise<Blob> {
-    const pdf = new jsPDF({
+  async loadImage(url: string): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.crossOrigin = 'Anonymous';
+
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        canvas.width = img.width;
+        canvas.height = img.height;
+
+        const ctx = canvas.getContext('2d');
+        ctx?.drawImage(img, 0, 0);
+
+        resolve(canvas.toDataURL('image/png'));
+      };
+
+      img.onerror = () => reject(new Error('Error loading image'));
+
+      img.src = url;
+    });
+  }
+
+  async generatePDF(formData: any, currentDate: Date, yearSelected: Date, certificateCode: string): Promise<Blob> {
+    const doc = new jsPDF({
       orientation: 'landscape',
       unit: 'mm',
-      format: 'letter',
+      format: 'a4',
       compress: true
     });
 
-    await html2canvas(element, {
-      scale: 2,
-      useCORS: true,
-      logging: false,
-      allowTaint: true,
-      backgroundColor: '#ffffff',
-      onclone: (document) => {
-        const clonedElement = document.querySelector('.verification-info');
-        if (clonedElement) {
-          clonedElement.querySelectorAll('*').forEach(el => {
-            (el as HTMLElement).style.userSelect = 'text';
-          });
-        }
-      }
-    }).then(canvas => {
-      const imgData = canvas.toDataURL('image/jpeg', 1.0);
-      pdf.addImage(imgData, 'JPEG', 0, 0, 279.4, 215.9);
-    });
+    try {
+      const pageWidth = 297;
+      const pageHeight = 210;
+      const leftMargin = -20; // Reducimos el margen izquierdo
+      const textWidth = 220; // Ancho máximo para el texto centrado
 
-    return pdf.output('blob');
+      // Cargar imagen de fondo
+      try {
+        const backgroundImage = await this.loadImage('images/template-certificado.png');
+        doc.addImage(backgroundImage, 'PNG', 0, 0, pageWidth, pageHeight);
+      } catch (error) {
+        console.error('Error loading background image:', error);
+      }
+
+      // Configurar color del texto
+      doc.setTextColor(44, 62, 80);
+
+      // Título en Y=72 como referencia base
+      doc.setFontSize(14);
+      doc.text('DE ASISTENCIA SEGÚN RESOLUCIÓN 3100 DE 2019', leftMargin + (textWidth/2), 72, { align: 'center' });
+
+      // Info empresa (8px después del título)
+      doc.text('NIT 9012123811 CDCREANIMARTE', leftMargin + (textWidth/2), 80, { align: 'center' });
+
+      // Nombre estudiante
+      doc.setFontSize(20);
+      doc.text(formData.studentName.toUpperCase(), leftMargin + (textWidth/2), 100, { align: 'center' });
+
+      // Información del documento
+      doc.setFontSize(16);
+      doc.setFont('normal');
+      const idText = `IDENTIFICADO CON ${formData.documentType}: ${formData.documentNumber} DE ${formData.expeditionPlace.toUpperCase()}`;
+      doc.text(idText, leftMargin + (textWidth/2), 109, { align: 'center' });
+      // Volver a normal
+
+      // Información del curso
+      doc.text('Asistió y aprobó el curso', leftMargin + (textWidth/2), 124, { align: 'center' });
+      doc.setFontSize(20);
+      doc.text(formData.courseName, leftMargin + (textWidth/2), 131, { align: 'center' });
+      doc.setFontSize(16);
+      doc.text(`con una intensidad de ${formData.hours} horas.`, leftMargin + (textWidth/2), 138, { align: 'center' });
+
+      // Firmas
+      try {
+        const firmaRep = await this.loadImage('images/fir_rep_legal.jpg');
+        const firmaDir = await this.loadImage('images/fir_dir_general.jpg');
+
+        const firmaY = 142;
+        // Ajustamos las firmas más a la izquierda
+        doc.addImage(firmaRep, 'JPEG', leftMargin + 65, firmaY, 30, 30);
+        doc.addImage(firmaDir, 'JPEG', leftMargin + 125, firmaY, 30, 30);
+
+        doc.setFontSize(12);
+        doc.text('Representante Legal', leftMargin + 80, firmaY + 32, { align: 'center' });
+        doc.text('Director General', leftMargin + 140, firmaY + 32, { align: 'center' });
+      } catch (error) {
+        console.error('Error loading signature images:', error);
+      }
+
+      // Información de verificación
+      const verificationX = pageWidth - 80;
+      const verificationY = 155;
+      const lineHeight = 8;
+
+      doc.setFontSize(15);
+      doc.text(`Emitido: ${format(currentDate, 'dd/MM/yyyy')}`, verificationX, verificationY);
+      doc.text(`Vigencia: ${format(currentDate, 'yyyy')} - ${format(yearSelected, 'yyyy')}`, verificationX, verificationY + lineHeight);
+      doc.text(`Código: ${certificateCode}`, verificationX, verificationY + (lineHeight * 2));
+
+      // Link de verificación
+      doc.setTextColor(74, 144, 226);
+      doc.text('Verificar:', verificationX, verificationY + (lineHeight * 3));
+      doc.text('https://cdcreanimarte.github.io/certificaciones', verificationX, verificationY + (lineHeight * 4));
+
+      return doc.output('blob');
+    } catch (error) {
+      console.error('Error generating PDF:', error);
+      throw new Error('Error generating PDF');
+    }
   }
 
   sendEmail(email: string, pdfBlob: Blob) {
