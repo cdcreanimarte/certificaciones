@@ -10,11 +10,12 @@ import { toast } from 'ngx-sonner';
 import * as packageJson from './../../../../../../package.json';
 import { Certificate } from '../../../../core/models/certificate';
 import { format, isAfter, parseISO } from 'date-fns';
+import { SharedModule } from '../../../../shared/shared.module';
 
 @Component({
   selector: 'app-certificate-validate',
   standalone: true,
-  imports: [CommonModule, MaterialModule, ReactiveFormsModule],
+  imports: [CommonModule, MaterialModule, SharedModule, ReactiveFormsModule],
   templateUrl: './certificate-validate.component.html',
   styleUrl: './certificate-validate.component.scss'
 })

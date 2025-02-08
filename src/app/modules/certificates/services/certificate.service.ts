@@ -290,19 +290,23 @@ export class CertificateService {
       }
 
       // Información de verificación
-      const verificationX = pageWidth - 80;
-      const verificationY = 155;
-      const lineHeight = 8;
+      const verificationX = pageWidth - 272;
+      const verificationY = 190;
+      const lineHeight = 6;
 
-      doc.setFontSize(15);
+      doc.setFontSize(12);
       doc.text(`Emitido: ${format(currentDate, 'dd/MM/yyyy')}`, verificationX, verificationY);
       doc.text(`Vigencia: ${format(currentDate, 'yyyy')} - ${format(yearSelected, 'yyyy')}`, verificationX, verificationY + lineHeight);
       doc.text(`Código: ${certificateCode}`, verificationX, verificationY + (lineHeight * 2));
 
       // Link de verificación
-      doc.setTextColor(74, 144, 226);
+      doc.setTextColor(44, 62, 80); // Color negro
       doc.text('Verificar:', verificationX, verificationY + (lineHeight * 3));
-      doc.text('https://cdcreanimarte.github.io/certificaciones', verificationX, verificationY + (lineHeight * 4));
+
+      // URL en azul, en la misma línea
+      doc.setTextColor(74, 144, 226); // Color azul
+      const verifyTextWidth = doc.getTextWidth('Verificar: ');
+      doc.text('https://cdcreanimarte.github.io/certificaciones', verificationX + verifyTextWidth, verificationY + (lineHeight * 3));
 
       return doc.output('blob');
     } catch (error) {

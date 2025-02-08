@@ -38,7 +38,7 @@
         <form [formGroup]="validateForm" (ngSubmit)="validateCertificate()" class="validator__search-form">
           <mat-form-field appearance="fill" class="login__input">
             <mat-label>Código</mat-label>
-            <input matInput formControlName="code" placeholder="Ingrese el código del certificado">
+            <input appTrimValue matInput formControlName="code" placeholder="Ingrese el código del certificado">
           </mat-form-field>
 
           <button mat-fab extended type="submit" >
@@ -62,23 +62,13 @@
 
             <div class="validator__card-content">
               <div class="validator__card-item">
-                <h3 class="validator__card-label">Código</h3>
-                <p class="validator__card-value">{{certificateData.code}}</p>
+                <h3 class="validator__card-label">Estudiante</h3>
+                <p class="validator__card-value">{{certificateData.studentName}} - {{certificateData.documentType}} {{certificateData.documentNumber}}</p>
               </div>
 
               <div class="validator__card-item">
                 <h3 class="validator__card-label">Curso</h3>
                 <p class="validator__card-value">{{certificateData.courseName}}</p>
-              </div>
-
-              <div class="validator__card-item">
-                <h3 class="validator__card-label">Estudiante</h3>
-                <p class="validator__card-value">{{certificateData.studentName}}</p>
-              </div>
-
-              <div class="validator__card-item">
-                <h3 class="validator__card-label">Documento</h3>
-                <p class="validator__card-value">{{certificateData.documentType}} {{certificateData.documentNumber}}</p>
               </div>
 
               <div class="validator__card-item">
