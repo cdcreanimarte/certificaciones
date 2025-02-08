@@ -1,22 +1,30 @@
-<div class="page-container">
-  <section>
-    <div class="example-button-row">
-      <button mat-flat-button (click)="logout()">Salir</button>
-      <a mat-flat-button routerLink="/administration/new">Nuevo Certificado</a>
-    </div>
-  </section>
 
-  <div class="container">
-    <h2>Certificados</h2>
+<div class="page-container">
+  <div class="list-container">
+    <div class="header-actions">
+      <h2>Certificados</h2>
+      <div class="action-buttons">
+        <button mat-flat-button color="warn" (click)="logout()">
+          Salir
+        </button>
+        <a mat-flat-button color="primary" routerLink="/administration/new">
+          Nuevo Certificado
+        </a>
+      </div>
+    </div>
 
     @if (loading()) {
-      <mat-spinner></mat-spinner>
+      <div class="center-content">
+        <mat-spinner></mat-spinner>
+      </div>
     }
 
     @if (error()) {
-      <div class="error-message">
-        {{ error() }}
-        <button mat-button (click)="reloadCertificates()">Reintentar</button>
+      <div class="error-content">
+        <p class="error-message">{{ error() }}</p>
+        <button mat-button color="primary" (click)="reloadCertificates()">
+          Reintentar
+        </button>
       </div>
     }
 
@@ -24,7 +32,8 @@
       <app-table
         [data]="certificates()"
         (deleteRequest)="onDeleteCertificate($event)"
-        (editRequest)="onEditCertificate($event)"/>
+        (editRequest)="onEditCertificate($event)"
+      />
     }
   </div>
 </div>

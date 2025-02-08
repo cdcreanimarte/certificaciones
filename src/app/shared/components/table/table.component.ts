@@ -1,76 +1,23 @@
+// table.component.ts
 import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { MaterialModule } from '../../material.module';
 import { Certificate } from '../../../core/models/certificate';
-import { MatDialog } from '@angular/material/dialog';
+import { MaterialModule } from '../../material.module';
 import { ModalConfirmationComponent } from '../modal-confirmation/modal-confirmation.component';
-export interface UserData {
-  id: string;
-  name: string;
-  progress: string;
-  fruit: string;
-}
+import { DatePipe } from '@angular/common';
 
-/** Constants used to fill up our data base. */
-const FRUITS: string[] = [
-  'blueberry',
-  'lychee',
-  'kiwi',
-  'mango',
-  'peach',
-  'lime',
-  'pomegranate',
-  'pineapple',
-];
-const NAMES: string[] = [
-  'Maia',
-  'Asher',
-  'Olivia',
-  'Atticus',
-  'Amelia',
-  'Jack',
-  'Charlotte',
-  'Theodore',
-  'Isla',
-  'Oliver',
-  'Isabella',
-  'Jasper',
-  'Cora',
-  'Levi',
-  'Violet',
-  'Arthur',
-  'Mia',
-  'Thomas',
-  'Elizabeth',
-];
 @Component({
   selector: 'app-table',
-  imports: [MaterialModule],
+  imports: [MaterialModule, DatePipe],
   templateUrl: './table.component.html',
   styleUrl: './table.component.scss'
 })
 export class TableComponent {
-
-  @Input() set data(value: Certificate[]) {
-    this.dataSource = new MatTableDataSource(value);
-    this.dataSource.paginator = this.paginator;
-    this.dataSource.sort = this.sort;
-    this.setupFilterPredicate();
-
-    // Configurar el filtrado personalizado
-    this.dataSource.filterPredicate = (data: Certificate, filter: string) => {
-      const searchStr = (
-        data.code +
-        data.studentName +
-        data.documentNumber +
-        data.courseName +
-        data.email
-      ).toLowerCase();
-      return searchStr.indexOf(filter.toLowerCase()) !== -1;
-    };
-  }
+  @ViewChild(MatSort) sort!: MatSort;
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   @Output() deleteRequest = new EventEmitter<Certificate>();
   @Output() editRequest = new EventEmitter<Certificate>();
@@ -78,7 +25,6 @@ export class TableComponent {
   displayedColumns: string[] = [
     'code',
     'studentName',
-    'documentType',
     'documentNumber',
     'courseName',
     'hours',
@@ -89,11 +35,27 @@ export class TableComponent {
 
   dataSource: MatTableDataSource<Certificate>;
 
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
-  @ViewChild(MatSort) sort!: MatSort;
-
   constructor(private dialog: MatDialog) {
     this.dataSource = new MatTableDataSource<Certificate>([]);
+  }
+
+  @Input() set data(value: Certificate[]) {
+    // Manejar el caso cuando created_at es undefined
+    const sortedData = value.sort((a, b) => {
+      const dateA = a.created_at ? new Date(a.created_at) : new Date(0);
+      const dateB = b.created_at ? new Date(b.created_at) : new Date(0);
+      return dateB.getTime() - dateA.getTime();
+    });
+
+    this.dataSource = new MatTableDataSource(sortedData);
+    this.dataSource.paginator = this.paginator;
+    this.dataSource.sort = this.sort;
+    this.setupFilterPredicate();
+  }
+
+  ngAfterViewInit() {
+    this.dataSource.paginator = this.paginator;
+    this.dataSource.sort = this.sort;
   }
 
   private setupFilterPredicate() {
@@ -109,12 +71,6 @@ export class TableComponent {
     };
   }
 
-
-  ngAfterViewInit() {
-    this.dataSource.paginator = this.paginator;
-    this.dataSource.sort = this.sort;
-  }
-
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
@@ -124,13 +80,7 @@ export class TableComponent {
     }
   }
 
-  onEdit(certificate: Certificate) {
-    // Implementar lógica de edición
-    console.log('Edit:', certificate);
-  }
-
   onDelete(certificate: Certificate) {
-    // Mostrar diálogo de confirmación
     const dialogRef = this.dialog.open(ModalConfirmationComponent, {
       width: '350px',
       data: certificate.studentName
@@ -141,15 +91,5 @@ export class TableComponent {
         this.deleteRequest.emit(certificate);
       }
     });
-  }
-
-  onView(certificate: Certificate) {
-    // Implementar lógica de visualización
-    console.log('View:', certificate);
-  }
-
-  onDownload(certificate: Certificate) {
-    // Implementar lógica de descarga
-    console.log('Download:', certificate);
   }
 }
