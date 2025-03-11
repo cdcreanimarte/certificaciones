@@ -1,3 +1,4 @@
+import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { AuthService } from '../../../auth/services/auth.service';
 import { Router, RouterLink } from '@angular/router';
@@ -9,7 +10,7 @@ import { toast } from 'ngx-sonner';
 
 @Component({
   selector: 'app-certificate-list',
-  imports: [MaterialModule, TableComponent, RouterLink],
+  imports: [MaterialModule, TableComponent, RouterLink, CommonModule],
   templateUrl: './certificate-list.component.html',
   styleUrl: './certificate-list.component.scss'
 })
@@ -23,7 +24,7 @@ export class CertificateListComponent {
   loading = this._certificateSrv.loading;
   error = this._certificateSrv.error;
 
-  ngOnInit(): void {
+  ngOnInit() {
     this._certificateSrv.list();
   }
 
@@ -48,5 +49,9 @@ export class CertificateListComponent {
   async logout() {
     await this._authSrv.logOut();
     this._router.navigateByUrl('/');
+  }
+
+  onViewCertificate(certificate: any) {
+    // Implementar lógica de visualización según sea necesario
   }
 }

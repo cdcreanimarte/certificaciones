@@ -1,22 +1,233 @@
 .mat-elevation-z8 {
   overflow-x: auto;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05) !important;
+  background-color: white;
 }
 
+// Estilos para el campo de filtro
+mat-form-field {
+  width: 100%;
+  margin-bottom: 16px;
+  
+  ::ng-deep .mat-form-field-wrapper {
+    padding-bottom: 0;
+  }
+  
+  ::ng-deep .mat-form-field-flex {
+    padding: 0 12px !important;
+    align-items: center;
+  }
+  
+  ::ng-deep .mat-form-field-infix {
+    padding: 12px 0 !important;
+    border-top: 0;
+  }
+  
+  // Estilos específicos para appearance="fill"
+  ::ng-deep .mat-form-field-label {
+    top: 24px !important; // Ajustar posición del label
+    transform-origin: left top !important;
+  }
+  
+  ::ng-deep .mat-form-field-label-wrapper {
+    top: -1em;
+    padding-top: 1em;
+  }
+  
+  ::ng-deep .mat-focused .mat-form-field-label {
+    transform: translateY(-1.5em) scale(0.75) !important;
+  }
+  
+  ::ng-deep .mat-form-field-appearance-fill .mat-form-field-flex {
+    background-color: white;
+    border-radius: 8px 8px 0 0;
+    padding: 12px 12px 0 12px !important;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+  }
+  
+  input {
+    font-size: 14px;
+  }
+}
+
+// Estilos para la tabla
 table {
   width: 100%;
   min-width: 900px;
+  border-collapse: separate;
+  border-spacing: 0;
+  
+  // Estilos para las filas
+  tr.mat-row {
+    height: 52px;
+    transition: background-color 0.2s ease;
+    
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.02);
+    }
+    
+    &:not(:last-child) {
+      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    }
+  }
+  
+  // Estilos para las celdas de encabezado
+  th.mat-header-cell {
+    font-weight: 600;
+    color: rgba(0, 0, 0, 0.7);
+    font-size: 13px;
+    padding: 16px 8px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    white-space: nowrap;
+    
+    &:first-child {
+      padding-left: 24px;
+    }
+    
+    &:last-child {
+      padding-right: 24px;
+    }
+  }
+  
+  // Estilos para las celdas de datos
+  td.mat-cell {
+    padding: 8px;
+    color: rgba(0, 0, 0, 0.8);
+    font-size: 14px;
+    
+    &:first-child {
+      padding-left: 24px;
+    }
+    
+    &:last-child {
+      padding-right: 24px;
+    }
+  }
 }
 
+// Estilos para la columna de acciones
 .mat-column-actions {
   width: 120px;
+  text-align: right;
+  
+  button {
+    width: 36px;
+    height: 36px;
+    line-height: 36px;
+    
+    mat-icon {
+      font-size: 18px;
+      color: rgba(0, 0, 0, 0.5);
+      transition: color 0.2s ease;
+    }
+    
+    &:hover mat-icon {
+      color: #f44336;
+    }
+  }
+}
+
+// Estilos para el paginador
+::ng-deep .mat-paginator {
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+  
+  .mat-paginator-container {
+    min-height: 56px;
+    padding: 0 24px;
+  }
+  
+  .mat-paginator-range-label {
+    margin: 0 24px;
+  }
+}
+
+// Mensaje de no datos
+tr.mat-row.mat-no-data-row td {
+  padding: 24px;
   text-align: center;
+  color: rgba(0, 0, 0, 0.5);
+  font-style: italic;
 }
 
-.mat-cell {
-  padding: 8px;
+// Estilos para los badges y elementos visuales
+.code-badge {
+  background-color: rgba(63, 81, 181, 0.1);
+  color: #3f51b5;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
 }
 
-.mat-header-cell {
-  font-weight: bold;
-  color: rgba(0, 0, 0, 0.87);
+.document-type {
+  color: rgba(0, 0, 0, 0.6);
+  font-size: 12px;
+  font-weight: 500;
+  margin-right: 4px;
+}
+
+.hours-badge {
+  background-color: rgba(76, 175, 80, 0.1);
+  color: #4caf50;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.email-link {
+  color: #3f51b5;
+  text-decoration: none;
+  transition: color 0.2s ease;
+  
+  &:hover {
+    color: #303f9f;
+    text-decoration: underline;
+  }
+}
+
+// Estilos para los botones de acción
+.action-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 4px;
+  
+  button:nth-child(1) mat-icon {
+    color: #3f51b5;
+  }
+  
+  button:nth-child(2) mat-icon {
+    color: #ff9800;
+  }
+  
+  button:nth-child(3) mat-icon {
+    color: #f44336;
+  }
+  
+  button:hover mat-icon {
+    transform: scale(1.2);
+  }
+}
+
+// Mensaje de no datos
+.no-data-message {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 0;
+  
+  mat-icon {
+    font-size: 48px;
+    height: 48px;
+    width: 48px;
+    margin-bottom: 16px;
+    color: rgba(0, 0, 0, 0.3);
+  }
+  
+  span {
+    font-size: 14px;
+  }
 }

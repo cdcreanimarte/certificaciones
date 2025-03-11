@@ -8,6 +8,7 @@ import { format, endOfYear, startOfYear } from 'date-fns';
 import { Certificate, CertificateCode, CertificateCreate, CertificateState, DecodedCertificateInfo } from '../../../core/models/certificate';
 import { SupabaseService } from '../../../shared/services/supabase.service';
 import { AuthService } from '../../auth/services/auth.service';
+import { tap, catchError, throwError } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -30,26 +31,21 @@ export class CertificateService {
   selectedCertificate = computed(() => this._state().selectedCertificate);
 
   async list() {
-    try {
-      this._state.update((state) => ({ ...state, loading: true }));
-      const userId = await this._authSrv.getUserId();
+    this._state.update((state) => ({ ...state, loading: true }));
+    const userId = await this._authSrv.getUserId();
+    
+    const { data, error } = await this._supabaseClient
+      .from(this.TABLE)
+      .select()
+      .eq('user_id', userId)
+      .returns<Certificate[]>();
 
-      const { data, error } = await this._supabaseClient
-        .from(this.TABLE)
-        .select()
-        .eq('user_id', userId)
-        .returns<Certificate[]>();
-
-      if (error) throw error;
-
-      if (data) {
-        this._state.update((state) => ({ ...state, certificates: data }));
-      }
-    } catch (error) {
-      this._state.update((state) => ({ ...state, error: 'Error fetching certificates' }));
-    } finally {
-      this._state.update((state) => ({ ...state, loading: false }));
+    if (error) {
+      this._state.update((state) => ({ ...state, error: error.message }));
+    } else {
+      this._state.update((state) => ({ ...state, certificates: data }));
     }
+    this._state.update((state) => ({ ...state, loading: false }));
   }
 
   async add(certificate: CertificateCreate) {

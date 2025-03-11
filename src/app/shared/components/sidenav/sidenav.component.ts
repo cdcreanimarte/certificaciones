@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { MaterialModule } from '../../material.module';
 import { Router, RouterLink } from '@angular/router';
 import { MENU_ITEMS, MenuItem } from '../../constant/menu.config';
@@ -11,5 +11,12 @@ import { MENU_ITEMS, MenuItem } from '../../constant/menu.config';
   styleUrl: './sidenav.component.scss'
 })
 export class SidenavComponent {
+  @Input() collapsed = false;
+  @Output() toggleCollapse = new EventEmitter<boolean>();
   menuItems: MenuItem[] = MENU_ITEMS;
+
+  toggleSidenavCollapse(): void {
+    this.collapsed = !this.collapsed;
+    this.toggleCollapse.emit(this.collapsed);
+  }
 }

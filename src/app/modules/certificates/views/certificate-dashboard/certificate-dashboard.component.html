@@ -1,43 +1,146 @@
-<div class="page-container">
-  <mat-grid-list cols="4" rowHeight="350px" gutterSize="16">
-    <div class="dashboard-container">
-      <mat-grid-list cols="4" rowHeight="350px" gutterSize="16" class="dashboard-grid">
-        <!-- KPI Cards -->
-        <mat-grid-tile [colspan]="1" [rowspan]="1">
-          <mat-card class="dashboard-card">
-            <mat-card-header>
-              <mat-card-title>Certificados Totales</mat-card-title>
-              <button mat-icon-button [matMenuTriggerFor]="menu" class="more-button">
-                <mat-icon>more_vert</mat-icon>
-              </button>
-              <mat-menu #menu="matMenu">
-                <button mat-menu-item>Ver detalles</button>
-                <button mat-menu-item>Actualizar</button>
-              </mat-menu>
-            </mat-card-header>
-            <mat-card-content class="dashboard-card-content">
-              <div class="stats-value">1,234</div>
-              <div class="stats-delta positive">+12% vs mes anterior</div>
-            </mat-card-content>
-          </mat-card>
-        </mat-grid-tile>
-
-        <!-- Gráfica Principal -->
-        <mat-grid-tile [colspan]="2" [rowspan]="2">
-          <mat-card class="dashboard-card">
-            <mat-card-header>
-              <mat-card-title>Certificados por Mes</mat-card-title>
-            </mat-card-header>
-            <mat-card-content class="dashboard-card-content">
-              <!-- Aquí irá el componente de gráfica -->
-              <div class="chart-placeholder">Gráfica de Tendencias</div>
-            </mat-card-content>
-          </mat-card>
-        </mat-grid-tile>
-
-        <!-- Más widgets... -->
-      </mat-grid-list>
+<div class="dashboard-container">
+  <!-- Primera fila - KPIs -->
+  <div class="dashboard-row">
+    <div class="dashboard-col kpi-col">
+      <mat-card class="dashboard-card">
+        <mat-card-content class="dashboard-card-content">
+          <div class="kpi-icon-container primary">
+            <mat-icon>description</mat-icon>
+          </div>
+          <div class="kpi-content">
+            <div class="kpi-label">Certificados Totales</div>
+            <div class="kpi-value">1,234</div>
+            <div class="kpi-delta positive">12% vs mes anterior</div>
+          </div>
+        </mat-card-content>
+      </mat-card>
     </div>
-  </mat-grid-list>
+
+    <div class="dashboard-col kpi-col">
+      <mat-card class="dashboard-card">
+        <mat-card-content class="dashboard-card-content">
+          <div class="kpi-icon-container success">
+            <mat-icon>check_circle</mat-icon>
+          </div>
+          <div class="kpi-content">
+            <div class="kpi-label">Certificados Emitidos</div>
+            <div class="kpi-value">856</div>
+            <div class="kpi-delta positive">8% vs mes anterior</div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <div class="dashboard-col kpi-col">
+      <mat-card class="dashboard-card">
+        <mat-card-content class="dashboard-card-content">
+          <div class="kpi-icon-container warning">
+            <mat-icon>pending</mat-icon>
+          </div>
+          <div class="kpi-content">
+            <div class="kpi-label">Certificados Pendientes</div>
+            <div class="kpi-value">45</div>
+            <div class="kpi-delta negative">15% vs mes anterior</div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <div class="dashboard-col kpi-col">
+      <mat-card class="dashboard-card">
+        <mat-card-content class="dashboard-card-content">
+          <div class="kpi-icon-container info">
+            <mat-icon>people</mat-icon>
+          </div>
+          <div class="kpi-content">
+            <div class="kpi-label">Usuarios Registrados</div>
+            <div class="kpi-value">328</div>
+            <div class="kpi-delta positive">5% vs mes anterior</div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+
+  <!-- Segunda fila - Gráficas principales -->
+  <div class="dashboard-row">
+    <!-- Imagen y resumen -->
+    <div class="dashboard-col image-col">
+      <mat-card class="dashboard-card">
+        <mat-card-header>
+          <mat-card-title>Sistema de Certificaciones</mat-card-title>
+        </mat-card-header>
+        <mat-card-content class="dashboard-card-content">
+          <img src="assets/images/certificates-dashboard.svg" alt="Dashboard de Certificaciones" class="dashboard-image">
+          <div class="stats-summary">
+            <div class="summary-item">
+              <div class="summary-label">Certificados</div>
+              <div class="summary-value">1,234</div>
+            </div>
+            <div class="summary-item">
+              <div class="summary-label">Completados</div>
+              <div class="summary-value">856</div>
+            </div>
+            <div class="summary-item">
+              <div class="summary-label">Pendientes</div>
+              <div class="summary-value">45</div>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <!-- Gráfica de tendencias -->
+    <div class="dashboard-col chart-col">
+      <mat-card class="dashboard-card">
+        <mat-card-header>
+          <mat-card-title>Certificados por Mes</mat-card-title>
+          <div class="card-actions">
+            <button mat-icon-button>
+              <mat-icon>more_vert</mat-icon>
+            </button>
+          </div>
+        </mat-card-header>
+        <mat-card-content class="dashboard-card-content">
+          <div class="chart-placeholder line-chart">Gráfica de Tendencias</div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+
+  <!-- Tercera fila - Gráficas adicionales -->
+  <div class="dashboard-row">
+    <div class="dashboard-col chart-col">
+      <mat-card class="dashboard-card">
+        <mat-card-header>
+          <mat-card-title>Distribución por Tipo</mat-card-title>
+          <div class="card-actions">
+            <button mat-icon-button>
+              <mat-icon>refresh</mat-icon>
+            </button>
+          </div>
+        </mat-card-header>
+        <mat-card-content class="dashboard-card-content">
+          <div class="chart-placeholder pie-chart">Gráfica de Distribución</div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+    
+    <div class="dashboard-col chart-col">
+      <mat-card class="dashboard-card">
+        <mat-card-header>
+          <mat-card-title>Certificados por Región</mat-card-title>
+          <div class="card-actions">
+            <button mat-icon-button>
+              <mat-icon>refresh</mat-icon>
+            </button>
+          </div>
+        </mat-card-header>
+        <mat-card-content class="dashboard-card-content">
+          <div class="chart-placeholder bar-chart">Gráfica de Barras</div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
 </div>
 

@@ -14,5 +14,9 @@ import { FooterComponent } from "../../../../shared/components/footer/footer.com
   styleUrl: './admin-layout.component.scss'
 })
 export class AdminLayoutComponent {
+  sidenavCollapsed = false;
 
+  onSidenavToggleCollapse(collapsed: boolean): void {
+    this.sidenavCollapsed = collapsed;
+  }
 }

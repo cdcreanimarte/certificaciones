@@ -1,7 +1,131 @@
-.active {
-  background: rgba(0, 0, 0, 0.04);
+// Variables
+$sidenav-expanded-width: 250px;
+$sidenav-collapsed-width: 64px;
+$transition-duration: 0.3s;
+
+:host {
+  display: block;
+  height: 100%;
+  overflow: hidden;
 }
 
-mat-icon {
-  margin-right: 16px;
+.sidenav-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: $sidenav-expanded-width;
+  transition: width $transition-duration ease;
+  position: relative;
+  
+  &.collapsed {
+    width: $sidenav-collapsed-width;
+  }
+}
+
+.toggle-button {
+  display: flex;
+  justify-content: flex-end;
+  padding: 8px;
+  
+  button {
+    background-color: rgba(0, 0, 0, 0.03);
+    
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.08);
+    }
+  }
+}
+
+mat-nav-list {
+  padding: 8px 4px;
+  width: 100%;
+  overflow: hidden;
+  box-sizing: border-box;
+  
+  a.mat-list-item {
+    margin: 4px 0;
+    height: 40px;
+    border-radius: 4px; // Reducido para que sea más rectangular
+    transition: all $transition-duration ease;
+    
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.04);
+      transform: translateX(2px);
+    }
+    
+    &.active {
+      background-color: rgba(63, 81, 181, 0.1);
+      
+      &:after {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 6px;
+        bottom: 6px;
+        width: 3px;
+        background-color: #3f51b5;
+        border-radius: 0 2px 2px 0;
+      }
+    }
+    
+    .menu-item {
+      display: flex;
+      align-items: center;
+      width: 100%;
+      
+      mat-icon {
+        margin-right: 16px;
+        color: rgba(0, 0, 0, 0.6);
+        transition: all $transition-duration ease;
+        font-size: 20px;
+        height: 20px;
+        width: 20px;
+        line-height: 20px;
+        flex-shrink: 0;
+      }
+      
+      .menu-label {
+        font-weight: 500;
+        font-size: 14px;
+        letter-spacing: 0.1px;
+        color: rgba(0, 0, 0, 0.75);
+        transition: opacity $transition-duration ease;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    }
+    
+    &.active {
+      .menu-item {
+        mat-icon {
+          color: #3f51b5;
+        }
+        
+        .menu-label {
+          color: #3f51b5;
+          font-weight: 600;
+        }
+      }
+    }
+  }
+}
+
+// Estilos para scrollbar delgado
+:host {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
+  
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 2px;
+  }
 }

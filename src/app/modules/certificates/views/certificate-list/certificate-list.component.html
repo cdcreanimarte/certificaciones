@@ -1,39 +1,45 @@
-
 <div class="page-container">
   <div class="list-container">
     <div class="header-actions">
       <h2>Certificados</h2>
       <div class="action-buttons">
         <button mat-flat-button color="warn" (click)="logout()">
-          Salir
+          <mat-icon>exit_to_app</mat-icon>
+          <span>Salir</span>
         </button>
         <a mat-flat-button color="primary" routerLink="/administration/new">
-          Nuevo Certificado
+          <mat-icon>add</mat-icon>
+          <span>Nuevo Certificado</span>
         </a>
       </div>
     </div>
 
     @if (loading()) {
-      <div class="center-content">
-        <mat-spinner></mat-spinner>
+      <div class="loading-container">
+        <div class="progress-bar"></div>
+        <div class="loading-text">Cargando certificados...</div>
       </div>
     }
 
     @if (error()) {
       <div class="error-content">
         <p class="error-message">{{ error() }}</p>
-        <button mat-button color="primary" (click)="reloadCertificates()">
+        <button mat-flat-button color="primary" (click)="reloadCertificates()">
+          <mat-icon>refresh</mat-icon>
           Reintentar
         </button>
       </div>
     }
 
     @if (!loading() && !error()) {
-      <app-table
-        [data]="certificates()"
-        (deleteRequest)="onDeleteCertificate($event)"
-        (editRequest)="onEditCertificate($event)"
-      />
+      <div class="table-container">
+        <app-table
+          [data]="certificates()"
+          (deleteRequest)="onDeleteCertificate($event)"
+          (editRequest)="onEditCertificate($event)"
+          (viewRequest)="onViewCertificate($event)"
+        />
+      </div>
     }
   </div>
 </div>

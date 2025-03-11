@@ -2,11 +2,11 @@
   <app-header (menuToggle)="sidenav.toggle()"></app-header>
 
   <mat-sidenav-container class="sidenav-container">
-    <mat-sidenav #sidenav mode="side" [opened]="true">
-      <app-sidenav></app-sidenav>
+    <mat-sidenav #sidenav mode="side" [opened]="true" [class.collapsed]="sidenavCollapsed">
+      <app-sidenav [collapsed]="sidenavCollapsed" (toggleCollapse)="onSidenavToggleCollapse($event)"></app-sidenav>
     </mat-sidenav>
 
-    <mat-sidenav-content>
+    <mat-sidenav-content [class.content-expanded]="sidenavCollapsed">
       <div class="content-wrapper">
         <router-outlet/>
       </div>
