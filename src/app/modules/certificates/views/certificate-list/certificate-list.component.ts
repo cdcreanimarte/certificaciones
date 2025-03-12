@@ -15,10 +15,8 @@ import { toast } from 'ngx-sonner';
   styleUrl: './certificate-list.component.scss'
 })
 export class CertificateListComponent {
-
-  private _authSrv = inject(AuthService);
-  private _certificateSrv = inject(CertificateService);
   private _router = inject(Router);
+  private _certificateSrv = inject(CertificateService);
 
   certificates = this._certificateSrv.certificates;
   loading = this._certificateSrv.loading;
@@ -44,11 +42,6 @@ export class CertificateListComponent {
       console.error('Error al eliminar:', error);
       toast.error(error.message || 'Error al eliminar el certificado');
     }
-  }
-
-  async logout() {
-    await this._authSrv.logOut();
-    this._router.navigateByUrl('/');
   }
 
   onViewCertificate(certificate: any) {

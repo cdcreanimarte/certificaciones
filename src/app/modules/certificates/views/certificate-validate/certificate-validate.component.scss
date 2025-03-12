@@ -39,7 +39,7 @@ $transition-duration: 0.3s;
   display: grid;
   min-height: 100vh;
   grid-template-rows: auto 1fr auto;
-  background: url('./../../../../../../public/images/back.jpg') center/cover no-repeat;
+  background: url('./../../../../../../public/images/background.jpg') center/cover no-repeat;
   position: relative; // Añade esta línea
 
   &__content-wrapper {
@@ -51,7 +51,7 @@ $transition-duration: 0.3s;
   }
 
   &__header {
-    background-color: rgba($color-gray-dark, 0.8); // Modifica el background actual
+    background-color: rgba($color-gray-light, 0.8); // Modifica el background actual
     backdrop-filter: blur(10px);
     position: relative;
     z-index: 30;
@@ -132,13 +132,13 @@ $transition-duration: 0.3s;
   &__title {
     font-size: 2rem;
     font-weight: bold;
-    color: $color-white;
+    color: $color-primary-dark;
     margin-bottom: 0.5rem;
     text-align: center;
   }
 
   &__subtitle {
-    color: $color-gray-light;
+    color: $color-gray-medium;
     text-align: center;
   }
 
