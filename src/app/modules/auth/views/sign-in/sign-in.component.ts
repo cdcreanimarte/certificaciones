@@ -44,8 +44,8 @@ export class SignInComponent {
 
   initForm(): void {
     this.reactiveForm = this._fb.nonNullable.group({
-      email: ['sksmartinez@gmail.com', [Validators.required, Validators.email]],
-      password: ['Skorpions1414@@##', [Validators.required, Validators.minLength(6)]],
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required, Validators.minLength(6)]],
       rememberMe: [false], // Nuevo control para el checkbox
     });
   }
