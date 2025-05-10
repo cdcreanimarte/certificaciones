@@ -82,7 +82,7 @@
       <!-- Sección 2: Datos del Curso -->
       <div class="form-section">
         <h3 class="section-title">Datos del Curso</h3>
-        <div class="form-row full-width">
+        <div class="form-row two-columns">
           <!-- Nombre del Curso -->
           <mat-form-field appearance="fill" class="certificate__field">
             <mat-label>Nombre del Curso</mat-label>
@@ -97,6 +97,21 @@
                 <mat-option [value]="course">{{course}}</mat-option>
               }
             </mat-autocomplete>
+          </mat-form-field>
+          
+          <!-- Fecha de Emisión -->
+          <mat-form-field appearance="fill" class="certificate__field">
+            <mat-label>Fecha de Emisión</mat-label>
+            <input matInput [matDatepicker]="issueDatePicker" formControlName="issueDate" 
+                   [min]="minIssueDate" [max]="maxIssueDate"
+                   placeholder="DD/MM/AAAA"
+                   (dateChange)="onDateChange($event)">
+            <mat-hint>Formato: día/mes/año</mat-hint>
+            <mat-datepicker-toggle matIconSuffix [for]="issueDatePicker"></mat-datepicker-toggle>
+            <mat-datepicker #issueDatePicker startView="month"></mat-datepicker>
+            @if (certificateForm.get('issueDate')?.touched && certificateForm.get('issueDate')?.errors) {
+              <mat-error>{{ getIssueDateErrorMessage() }}</mat-error>
+            }
           </mat-form-field>
         </div>
 

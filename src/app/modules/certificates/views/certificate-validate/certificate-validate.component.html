@@ -73,7 +73,7 @@
 
               <div class="validator__card-item">
                 <h3 class="validator__card-label">Fecha de Expedición</h3>
-                <p class="validator__card-value">{{certificateData.created_at | date:'dd/MM/yyyy'}}</p>
+                <p class="validator__card-value">{{certificateData.issueDate ? (certificateData.issueDate | date:'dd/MM/yyyy') : (certificateData.created_at | date:'dd/MM/yyyy')}}</p>
               </div>
 
               <div class="validator__card-item">

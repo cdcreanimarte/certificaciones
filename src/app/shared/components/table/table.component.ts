@@ -31,7 +31,7 @@ export class TableComponent implements OnInit, AfterViewInit {
     'courseName',
     'hours',
     'email',
-    'created_at',
+    'issueDate',
     'actions'
   ];
 
@@ -48,10 +48,12 @@ export class TableComponent implements OnInit, AfterViewInit {
       return;
     }
 
-    // Manejar el caso cuando created_at es undefined
+    // Ordenar por fecha de emisión o fecha de creación si la fecha de emisión no está disponible
     const sortedData = value.sort((a, b) => {
-      const dateA = a.created_at ? new Date(a.created_at) : new Date(0);
-      const dateB = b.created_at ? new Date(b.created_at) : new Date(0);
+      const dateA = a.issueDate ? new Date(a.issueDate) : 
+                   (a.created_at ? new Date(a.created_at) : new Date(0));
+      const dateB = b.issueDate ? new Date(b.issueDate) : 
+                   (b.created_at ? new Date(b.created_at) : new Date(0));
       return dateB.getTime() - dateA.getTime();
     });
 

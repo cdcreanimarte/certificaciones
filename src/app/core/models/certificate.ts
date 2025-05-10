@@ -9,6 +9,7 @@ export interface Certificate {
   email: string;
   validityYear: string;
   code: string;
+  issueDate?: string;
   created_at?: string;
   status?: 'active' | 'revoked';
 }

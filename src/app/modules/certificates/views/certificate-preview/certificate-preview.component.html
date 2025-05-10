@@ -34,8 +34,8 @@
       </div>
 
       <div class="verification-info">
-        <p>Emitido: <span>{{ currentDate | date:'dd/MM/yyyy' }}</span></p>
-        <p>Vigencia: <span>{{ currentDate | date:'yyyy' }} - {{yearSelected | date:'yyyy'}} </span></p>
+        <p>Emitido: <span>{{ formData?.issueDate | date:'dd/MM/yyyy' }}</span></p>
+        <p>Vigencia: <span>{{ formData?.issueDate | date:'yyyy' }} - {{yearSelected | date:'yyyy'}} </span></p>
         <p>Código: <span>{{ certificateCode }}</span></p>
         <p>Verificar: <a href="https://cdcreanimarte.github.io/certificaciones/">https://cdcreanimarte.github.io/certificaciones</a></p>
       </div>

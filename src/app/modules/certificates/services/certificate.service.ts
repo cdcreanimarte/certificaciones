@@ -52,6 +52,7 @@ export class CertificateService {
     try {
       const userId = await this._authSrv.getUserId();
 
+      // Ya no extraemos issueDate porque ahora existe en la base de datos
       const certificateToSave = {
         ...certificate,
         created_at: new Date().toISOString(),
@@ -231,6 +232,9 @@ export class CertificateService {
       const pageHeight = 210;
       const leftMargin = -20; // Reducimos el margen izquierdo
       const textWidth = 220; // Ancho máximo para el texto centrado
+      
+      // Usar la fecha de emisión desde formData si existe
+      const emissionDate = formData.issueDate ? new Date(formData.issueDate) : currentDate;
 
       // Cargar imagen de fondo
       try {
@@ -286,13 +290,13 @@ export class CertificateService {
       }
 
       // Información de verificación
-      const verificationX = pageWidth - 272;
+      const verificationX = pageWidth - 290;
       const verificationY = 190;
       const lineHeight = 6;
 
       doc.setFontSize(12);
-      doc.text(`Emitido: ${format(currentDate, 'dd/MM/yyyy')}`, verificationX, verificationY);
-      doc.text(`Vigencia: ${format(currentDate, 'yyyy')} - ${format(yearSelected, 'yyyy')}`, verificationX, verificationY + lineHeight);
+      doc.text(`Emitido: ${format(emissionDate, 'dd/MM/yyyy')}`, verificationX, verificationY);
+      doc.text(`Vigencia: ${format(emissionDate, 'yyyy')} - ${format(yearSelected, 'yyyy')}`, verificationX, verificationY + lineHeight);
       doc.text(`Código: ${certificateCode}`, verificationX, verificationY + (lineHeight * 2));
 
       // Link de verificación
@@ -322,9 +326,10 @@ export class CertificateService {
   generateCertificateCode(
     studentId: string,
     validityYear: number,
-    courseId?: string
+    courseId?: string,
+    issueDate?: Date
   ): CertificateCode {
-    const now = new Date();
+    const now = issueDate || new Date();
     const currentYear = now.getFullYear();
 
     // Generar componentes del código

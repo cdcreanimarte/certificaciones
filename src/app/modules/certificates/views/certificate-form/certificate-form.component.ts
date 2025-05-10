@@ -1,5 +1,5 @@
-import { Component,  ElementRef,  EventEmitter,  inject,  Input,  Output,  ViewChild } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component,  ElementRef,  EventEmitter,  inject,  Input,  Output,  ViewChild, LOCALE_ID, Inject } from '@angular/core';
+import { CommonModule, registerLocaleData } from '@angular/common';
 import {
   FormBuilder,
   FormGroup,
@@ -15,12 +15,39 @@ import { COURSE_LIST } from '../../../../shared/constant/course-list';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { CertificateCode, CertificateCreate } from '../../../../core/models/certificate';
 import { toast } from 'ngx-sonner';
+import { MAT_DATE_FORMATS, DateAdapter, MAT_DATE_LOCALE } from '@angular/material/core';
+import localeEs from '@angular/common/locales/es';
+import { format } from 'date-fns';
+import { es } from 'date-fns/locale';
+
+// Registrar la configuración regional española
+registerLocaleData(localeEs);
+
+// Formato de fecha personalizado (día/mes/año)
+export const DD_MM_YYYY_FORMAT = {
+  parse: {
+    dateInput: 'dd/MM/yyyy',
+  },
+  display: {
+    dateInput: 'dd/MM/yyyy',
+    monthYearLabel: 'MMM yyyy',
+    dateA11yLabel: 'dd/MM/yyyy',
+    monthYearA11yLabel: 'MMMM yyyy',
+  },
+};
 
 @Component({
   selector: 'app-certificate-form',
   imports: [CommonModule, ReactiveFormsModule, FormsModule, MaterialModule],
   templateUrl: './certificate-form.component.html',
-  styleUrl: './certificate-form.component.scss'
+  styleUrl: './certificate-form.component.scss',
+  providers: [
+    // Configurar locale para español
+    { provide: LOCALE_ID, useValue: 'es' },
+    { provide: MAT_DATE_LOCALE, useValue: 'es-ES' },
+    // Configurar formato de fecha personalizado
+    { provide: MAT_DATE_FORMATS, useValue: DD_MM_YYYY_FORMAT },
+  ],
 })
 export class CertificateFormComponent {
   @ViewChild('nameInput') nameInput!: ElementRef<HTMLInputElement>;
@@ -47,6 +74,8 @@ export class CertificateFormComponent {
   isGenerating = false;
   currentDate = new Date();
   yearSelected: Date = new Date();
+  maxIssueDate = new Date();
+  minIssueDate = new Date();
 
   // Datos del certificado
   documentTypes: DocumentType[] = [];
@@ -58,11 +87,28 @@ export class CertificateFormComponent {
   private _fb = inject(FormBuilder);
   private _certificateSrv = inject(CertificateService);
   private _certificateCodeSrv = inject(CertificateCodeService);
+  private _dateAdapter: DateAdapter<Date> = inject(DateAdapter);
+
+  constructor(@Inject(MAT_DATE_LOCALE) private _locale: string) {
+    // Configurar el adaptador de fecha para usar español
+    this._dateAdapter.setLocale('es-ES');
+  }
 
   ngOnInit(): void {
     this.initForm();
     this.generateValidityYears();
     this.loadDocumentTypes();
+    this.setupDateLimits();
+  }
+
+  private setupDateLimits(): void {
+    // Set max date to 5 months from current date
+    this.maxIssueDate = new Date();
+    this.maxIssueDate.setMonth(this.maxIssueDate.getMonth() + 5);
+    
+    // Set min date to 5 months ago
+    this.minIssueDate = new Date();
+    this.minIssueDate.setMonth(this.minIssueDate.getMonth() - 5);
   }
 
   private initForm(): void {
@@ -74,18 +120,8 @@ export class CertificateFormComponent {
       courseName: ['', [Validators.required, Validators.minLength(3)]],
       hours: ['', [Validators.required, Validators.min(1)]],
       email: ['', [Validators.required, Validators.email]],
-      validityYear: ['', [Validators.required]]
-    });
-
-    this.certificateForm = this._fb.group({
-      studentName: ['NESTOR IVÁN MARTINEZ COBO', [Validators.required, Validators.minLength(3)]],
-      documentType: ['CC', [Validators.required]],
-      documentNumber: ['1061779667', [Validators.required]],
-      expeditionPlace: ['POPAYÁN', [Validators.required, Validators.minLength(3)]],
-      courseName: ['Humanización de los Servicios de Salud', [Validators.required, Validators.minLength(3)]],
-      hours: ['40', [Validators.required, Validators.min(1)]],
-      email: ['sksmartinez@gmail.com', [Validators.required, Validators.email]],
-      validityYear: ['2026', [Validators.required]]
+      validityYear: ['', [Validators.required]],
+      issueDate: [new Date(), [Validators.required]]
     });
 
     this.setupFormValidations();
@@ -106,6 +142,20 @@ export class CertificateFormComponent {
     this.certificateForm.get('courseName')?.valueChanges.subscribe(value => {
       if (typeof value === 'string' && !COURSE_LIST.includes(value)) {
         this.filterCourses({ target: { value } });
+      }
+    });
+
+    this.certificateForm.get('issueDate')?.valueChanges.subscribe(value => {
+      if (value) {
+        const selectedDate = new Date(value);
+        if (selectedDate > this.maxIssueDate) {
+          this.certificateForm.get('issueDate')?.setErrors({ futureDate: true });
+        } else if (selectedDate < this.minIssueDate) {
+          this.certificateForm.get('issueDate')?.setErrors({ pastDate: true });
+        }
+        
+        // Emitir el valor del formulario para actualizar la previsualización
+        this.formValueChanged.emit(this.certificateForm.value);
       }
     });
 
@@ -290,7 +340,8 @@ export class CertificateFormComponent {
     const certCode: CertificateCode = this._certificateCodeSrv.generateCertificateCode(
       formValues.documentNumber,
       parseInt(formValues.validityYear),
-      formValues.courseName
+      formValues.courseName,
+      formValues.issueDate
     );
 
     // En lugar de manejar internamente la vista previa, emitimos los datos
@@ -310,6 +361,11 @@ export class CertificateFormComponent {
       return;
     }
 
+    // Preparamos los datos con el formato correcto
+    const issueDate = this.certificateForm.value.issueDate instanceof Date 
+      ? this.certificateForm.value.issueDate.toISOString() 
+      : new Date(this.certificateForm.value.issueDate).toISOString();
+
     const certificateData: CertificateCreate = {
       studentName: this.certificateForm.value.studentName,
       documentType: this.certificateForm.value.documentType,
@@ -319,7 +375,8 @@ export class CertificateFormComponent {
       hours: this.certificateForm.value.hours,
       email: this.certificateForm.value.email,
       validityYear: this.certificateForm.value.validityYear,
-      code: this.certificateCode
+      code: this.certificateCode,
+      issueDate: issueDate
     };
 
     this.saveRequested.emit(certificateData);
@@ -348,6 +405,36 @@ export class CertificateFormComponent {
       }
     } else {
       console.log('No se pudo decodificar el certificado');
+    }
+  }
+
+  getIssueDateErrorMessage(): string {
+    const control = this.certificateForm.get('issueDate');
+    if (!control?.errors) return '';
+
+    if (control.errors['required']) return 'La fecha de emisión es requerida';
+    if (control.errors['futureDate']) return 'La fecha no puede exceder los 5 meses desde hoy';
+    if (control.errors['pastDate']) return 'La fecha no puede ser anterior a 5 meses desde hoy';
+    
+    return '';
+  }
+
+  // Método para formatear la fecha en formato DD/MM/YYYY
+  formatDate(date: Date): string {
+    return format(date, 'dd/MM/yyyy', { locale: es });
+  }
+
+  // Método para obtener la fecha actual en formato DD/MM/YYYY para mostrar
+  get currentFormattedDate(): string {
+    return this.formatDate(new Date());
+  }
+
+  // Sobrescribir el método para actualizar y formatear la fecha cuando cambia
+  onDateChange(event: any): void {
+    if (event && event.value) {
+      const formattedDate = this.formatDate(event.value);
+      console.log('Fecha formateada:', formattedDate);
+      // Si se necesita actualizar algo específico con la fecha formateada
     }
   }
 }

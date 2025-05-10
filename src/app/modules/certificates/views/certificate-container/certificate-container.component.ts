@@ -30,13 +30,19 @@ export class CertificateContainerComponent {
   onFormValueChanged(formValue: any) {
     // Actualizamos los datos sin generar el código
     this.certificateData = formValue;
+    
+    // Usar la fecha de emisión seleccionada
+    if (formValue.issueDate) {
+      this.currentDate = new Date(formValue.issueDate);
+    }
 
     if (this.certificateGenerated) {
       // Si ya se generó una vista previa, actualizamos también el código
       const certCode = this._certificateCodeSrv.generateCertificateCode(
         formValue.documentNumber,
         parseInt(formValue.validityYear),
-        formValue.courseName
+        formValue.courseName,
+        formValue.issueDate // Pasar la fecha de emisión seleccionada
       );
       this.certificateCode = certCode.code;
     }
@@ -47,6 +53,12 @@ export class CertificateContainerComponent {
     this.certificateData = formData;
     this.certificateCode = certCode.code;
     this.yearSelected = new Date(parseInt(formData.validityYear), 0, 1);
+    
+    // Usar la fecha de emisión seleccionada para la vista previa
+    if (formData.issueDate) {
+      this.currentDate = new Date(formData.issueDate);
+    }
+    
     this.certificateGenerated = true;
   }
 

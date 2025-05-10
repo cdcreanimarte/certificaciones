@@ -12,9 +12,10 @@ export class CertificateCodeService {
   generateCertificateCode(
     studentId: string,
     validityYear: number,
-    courseId?: string
+    courseId?: string,
+    issueDate?: Date
   ): CertificateCode {
-    const now = new Date();
+    const now = issueDate || new Date();
     const currentYear = now.getFullYear();
 
     // Generar componentes del código
